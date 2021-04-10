@@ -34,9 +34,11 @@ class QueryCtr {
     //}
     
     var db = await openDatabase(path);
+    
 
 
     var res = await db.query("songs");
+    db.close();
     
     List<Song> list =
         res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : <Song>[];
@@ -61,7 +63,27 @@ class QueryCtr {
     int id = await db.insert("songs", song.toMap());
 
     print(await db.query("songs"));
+    //db.close();
     
+  }
+
+  void deleteSong(Song song) async {
+    Directory documentDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentDirectory.path, "data_flutter.db");
+    
+    
+    ByteData data = await rootBundle.load(join('data', 'songs.db'));
+    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+     
+    await new File(path).writeAsBytes(bytes);
+
+
+    var db = await openDatabase(path);
+
+    int rowsAffected = (await db.delete("songs",where: "id = ?", whereArgs: [song.id]));
+
+    print(await db.query("songs"));
+    //db.close();
   }
 
 

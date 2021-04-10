@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'query.dart';
 import 'song.dart';
+import 'songDetails.dart';
 
 void main() async {
   runApp(MyApp());
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class SongList extends StatefulWidget {
   @override
   _SongListState createState() => _SongListState();
@@ -28,7 +30,8 @@ class _SongListState extends State<SongList> {
   final List<String> songs = <String>['Love Again', 'Say something'];
   final String title = "Choorts";
   QueryCtr _query = new  QueryCtr();
-  final _biggerFont = const TextStyle(fontSize: 18.0);
+  final _biggerFont = const TextStyle(
+    fontSize: 18.0,);
 
 
   addSong(BuildContext context){
@@ -110,8 +113,37 @@ class _SongListState extends State<SongList> {
   }
 
   Widget _buildRow(Song song) {
-    return new ListTile(
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.blue,
+        border: Border.all(
+          color: Colors.blue,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(20))
+      ),
+      
+      child: ListTile(
       title: new Text(song.name, style: _biggerFont),
+      trailing: Container(
+        child: IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () {
+          setState(() {
+            _query.deleteSong(song);
+          });
+          },
+        ),
+      ), 
+     onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SongDetails()
+          )
+        );
+     }, 
+    ),
     );
   }
 
