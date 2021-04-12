@@ -38,7 +38,7 @@ class QueryCtr {
 
 
     var res = await db.query("songs");
-    db.close();
+    //db.close();
     
     List<Song> list =
         res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : <Song>[];
