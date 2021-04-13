@@ -9,6 +9,64 @@ class SongDetails extends StatefulWidget {
 }
 
 class _SongDetailsState extends State<SongDetails> {
+
+  double _currentTempoValue = 20;
+  bool _isTempoSliderVisible = true;
+
+
+  void showTempoSlider() {
+    setState(() {
+      _isTempoSliderVisible = !_isTempoSliderVisible;
+    });
+  }
+
+  addProgression(BuildContext context){
+
+    TextEditingController customController  =  new TextEditingController();
+    
+
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text("Choose progression",
+        textAlign: TextAlign.center),
+        actions: <Widget>[
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              
+                MaterialButton(
+                  color: Colors.blue,
+                  elevation: 0.5,
+                  child: Text("Chords",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white),
+                      ),
+                  onPressed: (){
+                  }
+              ),
+              MaterialButton(
+                color: Colors.blue,
+                  elevation: 0.5,
+                  child: Text("Tab",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white),
+                      ),
+                  onPressed: (){
+                  }
+              ,)
+            ]
+          )
+          )
+          
+        ],
+      );
+    });
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,19 +83,34 @@ class _SongDetailsState extends State<SongDetails> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("Tempo:",
+              Text("Tempo: ${_currentTempoValue.round().toString()}",
               style: TextStyle(fontSize: 20),
               ),
               FloatingActionButton(onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => SongList()
-                )
-              );
+                showTempoSlider();
             },
             child: Icon(Icons.add),
             ),
             ],
           ),
+          Row(children: [
+            Visibility(
+              visible: _isTempoSliderVisible,
+              child: Expanded(
+                child: Slider(
+                  value: _currentTempoValue,
+                  min:1,
+                  max:200,
+                  label: _currentTempoValue.round().toString(),
+                  onChanged: (double value) {
+                    setState(() {
+                      _currentTempoValue = value;
+                    });
+                  },
+                )
+              )
+            )
+          ],),
           Divider(
             color: Colors.black,
           ),
@@ -71,10 +144,7 @@ class _SongDetailsState extends State<SongDetails> {
           SizedBox(height: 30),
           Row(children: [
             FloatingActionButton(onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => SongList()
-                )
-              );
+              addProgression(context);
             },
             child: Icon(Icons.add)),
           ],)
