@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'main.dart';
 
@@ -36,8 +35,6 @@ class _SongDetailsState extends State<SongDetails> {
   
   Wrap getChordsList(){
 
-    
-
     return Wrap(
       spacing: 5,
       runSpacing: 5,
@@ -63,7 +60,13 @@ class _SongDetailsState extends State<SongDetails> {
           itemCount: chordsList.length,
           itemBuilder: (BuildContext context, int index){
             return ListTile(
-              title: Text('${chordsList[index]}')
+              title: Text('${chordsList[index]}'),
+              onTap: () {
+                setState(() {
+                  chordsProgression.insert(chordsProgression.length-1,
+                  Image.asset("data/images/chords/${chordsList[index]}.png"));
+                });
+              },
             );
         }),
       );
@@ -206,7 +209,7 @@ class _SongDetailsState extends State<SongDetails> {
                 spacing: 5,
                 runSpacing: 5,
                 children: chordsProgression,
-              ), 
+              ),
            ],),
           SizedBox(height: 30),
           Row(children: [
