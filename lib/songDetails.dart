@@ -10,8 +10,40 @@ class SongDetails extends StatefulWidget {
 
 class _SongDetailsState extends State<SongDetails> {
 
-  double _currentTempoValue = 20;
-  bool _isTempoSliderVisible = true;
+  double _currentTempoValue = 120;
+  bool _isTempoSliderVisible = false;
+  var chordsProgression = <Widget>[
+    //Image.asset("data/images/chords/Am.png"),
+    //Image.asset("data/images/chords/C.png"),
+    
+  ];
+  List<String> chordsList = ["Am", "C", "D", "G"];
+
+  @override
+ void initState() {
+    super.initState();
+    chordsProgression.add(Image.asset("data/images/chords/Am.png"));
+    chordsProgression.add(Image.asset("data/images/chords/C.png"));
+    chordsProgression.add(FloatingActionButton(
+      mini: true,
+      backgroundColor: Colors.black,
+      child: Icon(Icons.add),
+      onPressed: () {
+        addChord(context);
+      },
+      ));
+  }
+  
+  Wrap getChordsList(){
+
+    
+
+    return Wrap(
+      spacing: 5,
+      runSpacing: 5,
+      children: chordsProgression,
+      );
+  }
 
 
   void showTempoSlider() {
@@ -20,10 +52,35 @@ class _SongDetailsState extends State<SongDetails> {
     });
   }
 
+  addChord(BuildContext context){
+     TextEditingController customController  =  new TextEditingController();
+
+    Widget setupChordsListContainer(){
+      return Container(
+        height: 200.0, // Change as per your requirement
+        width: 200.0, // Change as per your requirement
+        child: ListView.builder(
+          itemCount: chordsList.length,
+          itemBuilder: (BuildContext context, int index){
+            return ListTile(
+              title: Text('${chordsList[index]}')
+            );
+        }),
+      );
+    }
+
+    return showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Pick a chord"),
+        content: setupChordsListContainer(),
+      );
+    });
+
+  }
+
   addProgression(BuildContext context){
 
     TextEditingController customController  =  new TextEditingController();
-    
 
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
@@ -45,7 +102,7 @@ class _SongDetailsState extends State<SongDetails> {
                       ),
                   onPressed: (){
                   }
-              ),
+                ),
               MaterialButton(
                 color: Colors.blue,
                   elevation: 0.5,
@@ -141,6 +198,16 @@ class _SongDetailsState extends State<SongDetails> {
             Text("Progression",
             style: TextStyle(fontSize: 20))
           ],),
+          SizedBox(height: 30),
+          ListView(
+            shrinkWrap: true,
+            children: [
+              Wrap(
+                spacing: 5,
+                runSpacing: 5,
+                children: chordsProgression,
+              ), 
+           ],),
           SizedBox(height: 30),
           Row(children: [
             FloatingActionButton(onPressed: () {
