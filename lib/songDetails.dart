@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:choorts/strummingCheckBoxList.dart';
 import 'package:flutter/material.dart';
-import 'main.dart';
 
 MyGlobals myGlobals = MyGlobals();
 
@@ -27,42 +26,16 @@ class _SongDetailsState extends State<SongDetails> {
   List<String> chordsList = ["Am", "C", "D", "G"];
   List<List<Widget>> progressions = [];
   List<String> progressionsTitles = [];
-
-  @override
- void initState() {
-    super.initState();
-    //chordsProgression.add(Image.asset("data/images/chords/Am.png"));
-    //chordsProgression.add(Image.asset("data/images/chords/C.png"));
-    // chordsProgression.add(
-    //   MaterialButton(
-    //   //mini: true,
-    //   //backgroundColor: Colors.black,
-    //   child: Icon(Icons.add),
-    //   onPressed: () {
-    //     addChord(context);
-    //   },
-    //   ));
-      
-  }
   
-  Wrap getChordsList(){
-
-    return Wrap(
-      spacing: 5,
-      runSpacing: 5,
-      children: chordsProgression,
-      );
-  }
-
-
   void showTempoSlider() {
     setState(() {
       _isTempoSliderVisible = !_isTempoSliderVisible;
     });
   }
 
-  addChord(BuildContext context){
-     TextEditingController customController  =  new TextEditingController();
+  addChord(BuildContext context, int progresionPos){
+
+    TextEditingController customController  =  new TextEditingController();
 
     Widget setupChordsListContainer(){
       return Container(
@@ -75,7 +48,7 @@ class _SongDetailsState extends State<SongDetails> {
               title: Text('${chordsList[index]}'),
               onTap: () {
                 setState(() {
-                  progressions[progressions.length-1].insert(chordsProgression.length,
+                  progressions[progresionPos].insert(progressions[progresionPos].length - 1,
                   Image.asset("data/images/chords/${chordsList[index]}.png"));
                 });
               },
@@ -168,11 +141,13 @@ class _SongDetailsState extends State<SongDetails> {
                     setState(() {
                       List<Widget> temp = [];
 
+                      int i = progressions.length;
+
                       temp.add(
                         IconButton(
                         icon: Icon(Icons.add,),
                         onPressed: () {
-                          addChord(myGlobals.scaffoldKey.currentContext!);
+                          addChord(myGlobals.scaffoldKey.currentContext!, i);
                         },
                       ));
 
@@ -204,7 +179,7 @@ class _SongDetailsState extends State<SongDetails> {
     
   }
 
-  addProgression() {
+  getProgressionsList() {
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -245,11 +220,10 @@ class _SongDetailsState extends State<SongDetails> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-              child: Container(
+        child: Container(
           margin: EdgeInsets.all(20),
           child: Center(
           child: Column(
-            //mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -310,16 +284,7 @@ class _SongDetailsState extends State<SongDetails> {
               style: TextStyle(fontSize: 20))
             ],),
             SizedBox(height: 30),
-            // ListView(
-            //   shrinkWrap: true,
-            //   children: [
-            //     Wrap(
-            //       spacing: 5,
-            //       runSpacing: 5,
-            //       children: chordsProgression,
-            //     ),
-            //  ],),
-            addProgression(),
+            getProgressionsList(),
             SizedBox(height: 30),
             Row(children: [
               FloatingActionButton(onPressed: () {
