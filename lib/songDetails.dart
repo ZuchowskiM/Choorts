@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:choorts/strummingCheckBoxList.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 
@@ -32,14 +33,15 @@ class _SongDetailsState extends State<SongDetails> {
     super.initState();
     //chordsProgression.add(Image.asset("data/images/chords/Am.png"));
     //chordsProgression.add(Image.asset("data/images/chords/C.png"));
-    chordsProgression.add(FloatingActionButton(
-      mini: true,
-      backgroundColor: Colors.black,
-      child: Icon(Icons.add),
-      onPressed: () {
-        addChord(context);
-      },
-      ));
+    // chordsProgression.add(
+    //   MaterialButton(
+    //   //mini: true,
+    //   //backgroundColor: Colors.black,
+    //   child: Icon(Icons.add),
+    //   onPressed: () {
+    //     addChord(context);
+    //   },
+    //   ));
       
   }
   
@@ -73,7 +75,7 @@ class _SongDetailsState extends State<SongDetails> {
               title: Text('${chordsList[index]}'),
               onTap: () {
                 setState(() {
-                  progressions[progressions.length-1].insert(chordsProgression.length-1,
+                  progressions[progressions.length-1].insert(chordsProgression.length,
                   Image.asset("data/images/chords/${chordsList[index]}.png"));
                 });
               },
@@ -86,6 +88,52 @@ class _SongDetailsState extends State<SongDetails> {
       return AlertDialog(
         title: Text("Pick a chord"),
         content: setupChordsListContainer(),
+      );
+    });
+
+  }
+
+  showAddStrummingDialog(BuildContext context) {
+
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text("Add strumming",
+        textAlign: TextAlign.center,),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            strummingCheckBoxList(isStrummingUp: true,),
+            strummingCheckBoxList(isStrummingUp: false,),           
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+
+                Container(child: Icon(Icons.music_note), width: 35, alignment: Alignment.centerLeft,),
+                Expanded(child: Text("1")),
+                Expanded(child: Text("&")),
+                Expanded(child: Text("2")),
+                Expanded(child: Text("&")),
+                Expanded(child: Text("3")),
+                Expanded(child: Text("&")),
+                Expanded(child: Text("4")),
+                Expanded(child: Text("&")),
+              ],
+            )
+          ],
+          ),
+        actions: <Widget>[
+          Center(
+            child: MaterialButton(
+              onPressed: (){}, 
+              color: Colors.blue,
+              elevation: 0.5,
+              child: Text("Add",
+              style: TextStyle(
+              fontSize: 20,
+              color: Colors.white),
+              ),),
+          )
+        ],
       );
     });
 
@@ -120,10 +168,9 @@ class _SongDetailsState extends State<SongDetails> {
                     setState(() {
                       List<Widget> temp = [];
 
-                      temp.add(FloatingActionButton(
-                        mini: true,
-                        backgroundColor: Colors.black,
-                        child: Icon(Icons.add),
+                      temp.add(
+                        IconButton(
+                        icon: Icon(Icons.add,),
                         onPressed: () {
                           addChord(myGlobals.scaffoldKey.currentContext!);
                         },
@@ -144,6 +191,7 @@ class _SongDetailsState extends State<SongDetails> {
                         color: Colors.white),
                       ),
                   onPressed: (){
+                    
                   }
               ,)
             ]
@@ -158,6 +206,7 @@ class _SongDetailsState extends State<SongDetails> {
 
   addProgression() {
     return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: progressions.length,
       itemBuilder: (BuildContext context, int index) {
@@ -166,6 +215,7 @@ class _SongDetailsState extends State<SongDetails> {
           Text(progressionsTitles[index], textAlign: TextAlign.center,),
           Wrap(children: [
             GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4),
@@ -246,10 +296,7 @@ class _SongDetailsState extends State<SongDetails> {
             SizedBox(height: 30),
             Row( children: [
               FloatingActionButton(onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => SongList()
-                  )
-                );
+                showAddStrummingDialog(context);
               },
               child: Icon(Icons.add)),
             ],),
