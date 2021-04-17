@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
 
-class strummingCheckBoxList extends StatefulWidget {
+class StrummingCheckBoxList extends StatefulWidget {
 
   final bool isStrummingUp;
+  List<bool> boxState = [false, false, false ,false, false, false, false, false];
 
-  const strummingCheckBoxList({Key? key, required this.isStrummingUp}): super(key: key);
+  StrummingCheckBoxList({Key? key, required this.isStrummingUp}): super(key: key);
 
   @override
-  _strummingCheckBoxListState createState() => _strummingCheckBoxListState();
+  _StrummingCheckBoxListState createState() => _StrummingCheckBoxListState();
 }
 
-class _strummingCheckBoxListState extends State<strummingCheckBoxList> {
+class _StrummingCheckBoxListState extends State<StrummingCheckBoxList> {
 
   List<bool> _checkBoxState = [false, false, false ,false, false, false, false, false];
-  
+
   getStrummingIcon(bool isStrummingUp){
     if(isStrummingUp){
       return Icon(Icons.arrow_upward);
@@ -32,27 +33,35 @@ class _strummingCheckBoxListState extends State<strummingCheckBoxList> {
           getStrummingIcon(widget.isStrummingUp),
           Expanded(child: Checkbox(value: _checkBoxState[0], onChanged: (newValue){setState(() {
             _checkBoxState[0] = newValue!;
+            widget.boxState[0] = newValue;
           });},)),
           Expanded(child: Checkbox(value: _checkBoxState[1], onChanged: (newValue){setState(() {
             _checkBoxState[1] = newValue!;
+            widget.boxState[1] = newValue;
           });},)),
           Expanded(child: Checkbox(value: _checkBoxState[2], onChanged: (newValue){setState(() {
             _checkBoxState[2] = newValue!;
+            widget.boxState[2] = newValue;
           });},)),
           Expanded(child: Checkbox(value: _checkBoxState[3], onChanged: (newValue){setState(() {
             _checkBoxState[3] = newValue!;
+            widget.boxState[3] = newValue;
           });},)),
           Expanded(child: Checkbox(value: _checkBoxState[4], onChanged: (newValue){setState(() {
             _checkBoxState[4] = newValue!;
+            widget.boxState[4] = newValue;
           });},)),
           Expanded(child: Checkbox(value: _checkBoxState[5], onChanged: (newValue){setState(() {
             _checkBoxState[5] = newValue!;
+            widget.boxState[5] = newValue;
           });},)),
           Expanded(child: Checkbox(value: _checkBoxState[6], onChanged: (newValue){setState(() {
             _checkBoxState[6] = newValue!;
+            widget.boxState[6] = newValue;
           });},)),
           Expanded(child: Checkbox(value: _checkBoxState[7], onChanged: (newValue){setState(() {
             _checkBoxState[7] = newValue!;
+            widget.boxState[7] = newValue;
           });},)),
        ],
     );

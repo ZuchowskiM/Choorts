@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:choorts/strummingCheckBoxList.dart';
+import 'package:choorts/strummingPattern.dart';
+import 'package:choorts/strummingPatternList.dart';
 import 'package:flutter/material.dart';
 
 MyGlobals myGlobals = MyGlobals();
@@ -26,6 +28,7 @@ class _SongDetailsState extends State<SongDetails> {
   List<String> chordsList = ["Am", "C", "D", "G"];
   List<List<Widget>> progressions = [];
   List<String> progressionsTitles = [];
+  List<StrummingPattern> strummingPatterns = [];
   
   void showTempoSlider() {
     setState(() {
@@ -68,6 +71,10 @@ class _SongDetailsState extends State<SongDetails> {
 
   showAddStrummingDialog(BuildContext context) {
 
+    TextEditingController customController  =  new TextEditingController();
+    StrummingCheckBoxList strummingCheckBoxListUp = new StrummingCheckBoxList(isStrummingUp: true);
+    StrummingCheckBoxList strummingCheckBoxListDown = new StrummingCheckBoxList(isStrummingUp: false);
+
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
         title: Text("Add strumming",
@@ -75,8 +82,9 @@ class _SongDetailsState extends State<SongDetails> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            strummingCheckBoxList(isStrummingUp: true,),
-            strummingCheckBoxList(isStrummingUp: false,),           
+            TextField(controller: customController,),
+            strummingCheckBoxListUp,
+            strummingCheckBoxListDown,           
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -97,7 +105,19 @@ class _SongDetailsState extends State<SongDetails> {
         actions: <Widget>[
           Center(
             child: MaterialButton(
-              onPressed: (){}, 
+              onPressed: (){
+                setState(() {
+                  String tempPatternName = customController.text.toString();
+
+                  if(tempPatternName == "") {tempPatternName="Main";}
+
+                  StrummingPattern temp = StrummingPattern(isStrumUp: strummingCheckBoxListUp.boxState,
+                  isStrumDown: strummingCheckBoxListDown.boxState,
+                  patternName: tempPatternName,);
+
+                  strummingPatterns.add(temp);
+                });
+              }, 
               color: Colors.blue,
               elevation: 0.5,
               child: Text("Add",
@@ -267,6 +287,8 @@ class _SongDetailsState extends State<SongDetails> {
                 textAlign: TextAlign.center,
               ),
             ],),
+            SizedBox(height: 30),
+            StrummingPatternList(strummingPattern: strummingPatterns),
             SizedBox(height: 30),
             Row( children: [
               FloatingActionButton(onPressed: () {
