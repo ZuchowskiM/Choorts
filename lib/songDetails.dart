@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:choorts/strummingCheckBoxList.dart';
 import 'package:choorts/strummingPattern.dart';
 import 'package:choorts/strummingPatternList.dart';
+import 'package:choorts/tabCharsGrid.dart';
 import 'package:flutter/material.dart';
 
 MyGlobals myGlobals = MyGlobals();
@@ -69,6 +70,79 @@ class _SongDetailsState extends State<SongDetails> {
 
   }
 
+  showAddTabDialog(BuildContext context){
+
+    TextEditingController customController  =  new TextEditingController();
+    bool accepted = true;
+    Text example = Text("default");
+    double x = 200;
+    double y = 20;
+    double wantedX = 200;
+    double wantedY = 20;
+
+    return showDialog(context: context, builder: (context){
+      return AlertDialog(
+        title: Text("Add tab",
+          textAlign: TextAlign.center,),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              color: Colors.white,
+              child: DragTarget<Text>(
+                builder: (context, candidateData, rejectedData) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTapUp: (details) {
+                      setState(() {
+                        wantedX = details.localPosition.dx;
+                        wantedY = details.localPosition.dy;
+                        print(wantedY);
+                        print(wantedX);
+                      });
+                      
+                    },
+                    child: Stack(
+                      children: [
+                        Positioned(top: wantedY, left: wantedX, child: example,),
+                        Image.asset("data/images/other/tab.png")]),
+                  );
+                },
+                onWillAccept: (data) {
+                  return accepted;
+                },
+                // onAccept: (data) {
+                //   setState(() {
+                //     print("acceptowano");
+                //     example = data;
+                //   });
+                  
+                // },
+                onAcceptWithDetails: (details) {
+                  setState(() {
+                    print("acceptowano");
+                    //x = details.offset.dx;
+                    //y = details.offset.dy;
+                    example = details.data;
+                  });
+                },
+                onLeave: (data) {
+                  print("leave");
+                },
+                
+              )
+            ),
+            Row(
+              children: [
+                Expanded(child: Container(height: 400, width: 200, child: TabCharsGrid())),
+              ],
+            ),
+          ]
+        ),
+      );
+    });
+  }
+
   showAddStrummingDialog(BuildContext context) {
 
     TextEditingController customController  =  new TextEditingController();
@@ -78,7 +152,7 @@ class _SongDetailsState extends State<SongDetails> {
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
         title: Text("Add strumming",
-        textAlign: TextAlign.center,),
+          textAlign: TextAlign.center,),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -186,7 +260,9 @@ class _SongDetailsState extends State<SongDetails> {
                         color: Colors.white),
                       ),
                   onPressed: (){
-                    
+                    setState(() {
+                      showAddTabDialog(context);
+                    });
                   }
               ,)
             ]
