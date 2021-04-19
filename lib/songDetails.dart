@@ -4,6 +4,7 @@ import 'package:choorts/strummingPattern.dart';
 import 'package:choorts/strummingPatternList.dart';
 import 'package:choorts/tabCharsGrid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 MyGlobals myGlobals = MyGlobals();
 
@@ -22,6 +23,7 @@ class SongDetails extends StatefulWidget {
 }
 
 class _SongDetailsState extends State<SongDetails> {
+
 
   double _currentTempoValue = 120;
   bool _isTempoSliderVisible = false;
@@ -74,11 +76,24 @@ class _SongDetailsState extends State<SongDetails> {
 
     TextEditingController customController  =  new TextEditingController();
     bool accepted = true;
-    Text example = Text("default");
+    Text example = Text("default", style: TextStyle(backgroundColor: Colors.white,));
     double x = 200;
     double y = 20;
-    double wantedX = 200;
-    double wantedY = 20;
+    List<Positioned> notesList = [];
+    Image tabImage = Image.asset("data/images/chords/Am.png");
+    var src = new GlobalKey();
+
+    takeScreenshot() async{
+      RenderRepaintBoundary repaintBoundary = src.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      repaintBoundary.toImage();
+      var image = await repaintBoundary.toImage();
+      var byteData = await image.toByteData(format: ImageByteFormat.png);
+      var pngBytes = byteData!.buffer.asUint8List();
+      setState(() {
+        tabImage = Image.memory(pngBytes.buffer.asUint8List());
+      });
+    }
+
 
     return showDialog(context: context, builder: (context){
       return AlertDialog(
@@ -91,54 +106,67 @@ class _SongDetailsState extends State<SongDetails> {
               color: Colors.white,
               child: DragTarget<Text>(
                 builder: (context, candidateData, rejectedData) {
-                  return GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTapUp: (details) {
-                      setState(() {
-                        wantedX = details.localPosition.dx;
-                        wantedY = details.localPosition.dy;
-                        print(wantedY);
-                        print(wantedX);
-                      });
-                      
-                    },
+                  return RepaintBoundary(
+                    key: src,
                     child: Stack(
-                      children: [
-                        Positioned(top: wantedY, left: wantedX, child: example,),
-                        Image.asset("data/images/other/tab.png")]),
+                    alignment: AlignmentDirectional.center,
+                    children: [
+                      Container(height: 180),
+                      Image.asset("data/images/other/tab.png"),
+                      ...notesList,
+                    ]),
                   );
                 },
                 onWillAccept: (data) {
                   return accepted;
                 },
-                // onAccept: (data) {
-                //   setState(() {
-                //     print("acceptowano");
-                //     example = data;
-                //   });
-                  
-                // },
                 onAcceptWithDetails: (details) {
                   setState(() {
                     print("acceptowano");
-                    //x = details.offset.dx;
-                    //y = details.offset.dy;
+                    x = details.offset.dx - 40;
+                    y = details.offset.dy - 120.0;
+                    print(x);
+                    print(y);
                     example = details.data;
+                    notesList.add(Positioned(top: y, left: x, child: example,));
                   });
                 },
                 onLeave: (data) {
                   print("leave");
-                },
-                
+                },  
               )
             ),
             Row(
               children: [
-                Expanded(child: Container(height: 400, width: 200, child: TabCharsGrid())),
+                Expanded(child: Container(height: 300, width: 200, child: TabCharsGrid())),
               ],
             ),
           ]
         ),
+      actions: <Widget>[
+        Center(child: MaterialButton(
+          color: Colors.blue,
+          elevation: 0.5,
+          child: Text("Add",
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white)
+          ),
+          onPressed: (){
+            setState(() {
+              List<Image> stackListTemp = [];
+
+              takeScreenshot().then((value) {
+                stackListTemp.add(tabImage);
+                progressions.add(stackListTemp);
+                progressionsTitles.add("val");
+              });
+
+              
+            });
+          }),
+        )
+      ],
       );
     });
   }
@@ -198,7 +226,8 @@ class _SongDetailsState extends State<SongDetails> {
               style: TextStyle(
               fontSize: 20,
               color: Colors.white),
-              ),),
+              ),
+            ),
           )
         ],
       );

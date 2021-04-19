@@ -12,7 +12,7 @@ class TabChar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Draggable<Text>(
-      data: Text(charToDraw),
+      data: Text(charToDraw, style: TextStyle(backgroundColor: Colors.white,)),
         childWhenDragging: Text(charToDraw, textAlign: TextAlign.center,),
         feedback: Material(child: Text(charToDraw)),
             child: Container(
