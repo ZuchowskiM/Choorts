@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:choorts/chordProgressionWidget.dart';
 import 'package:choorts/strummingCheckBoxList.dart';
 import 'package:choorts/strummingPattern.dart';
 import 'package:choorts/strummingPatternList.dart';
@@ -27,9 +28,8 @@ class _SongDetailsState extends State<SongDetails> {
 
   double _currentTempoValue = 120;
   bool _isTempoSliderVisible = false;
-  var chordsProgression = <Widget>[];
   List<String> chordsList = ["Am", "C", "D", "G"];
-  List<List<Widget>> progressions = [];
+  List<Widget> progressions = [];
   List<String> progressionsTitles = [];
   List<StrummingPattern> strummingPatterns = [];
   
@@ -37,39 +37,6 @@ class _SongDetailsState extends State<SongDetails> {
     setState(() {
       _isTempoSliderVisible = !_isTempoSliderVisible;
     });
-  }
-
-  addChord(BuildContext context, int progresionPos){
-
-    TextEditingController customController  =  new TextEditingController();
-
-    Widget setupChordsListContainer(){
-      return Container(
-        height: 200.0, // Change as per your requirement
-        width: 200.0, // Change as per your requirement
-        child: ListView.builder(
-          itemCount: chordsList.length,
-          itemBuilder: (BuildContext context, int index){
-            return ListTile(
-              title: Text('${chordsList[index]}'),
-              onTap: () {
-                setState(() {
-                  progressions[progresionPos].insert(progressions[progresionPos].length - 1,
-                  Image.asset("data/images/chords/${chordsList[index]}.png"));
-                });
-              },
-            );
-        }),
-      );
-    }
-
-    return showDialog(context: context, builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Pick a chord"),
-        content: setupChordsListContainer(),
-      );
-    });
-
   }
 
   showAddTabDialog(BuildContext context){
@@ -157,8 +124,7 @@ class _SongDetailsState extends State<SongDetails> {
               List<Image> stackListTemp = [];
 
               takeScreenshot().then((value) {
-                stackListTemp.add(tabImage);
-                progressions.add(stackListTemp);
+                progressions.add(tabImage);
                 progressionsTitles.add("val");
               });
 
@@ -262,17 +228,7 @@ class _SongDetailsState extends State<SongDetails> {
                       ),
                   onPressed: (){
                     setState(() {
-                      List<Widget> temp = [];
-
-                      int i = progressions.length;
-
-                      temp.add(
-                        IconButton(
-                        icon: Icon(Icons.add,),
-                        onPressed: () {
-                          addChord(myGlobals.scaffoldKey.currentContext!, i);
-                        },
-                      ));
+                      ChordProgressionWidget temp = ChordProgressionWidget();
 
                       progressions.add(temp);
                       progressionsTitles.add(customController.text.toString());
@@ -314,22 +270,7 @@ class _SongDetailsState extends State<SongDetails> {
           
           Text(progressionsTitles[index], textAlign: TextAlign.center,),
           Wrap(children: [
-            GridView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4),
-            itemCount: progressions[index].length,
-            itemBuilder: (BuildContext context, int i) {
-
-              if(i==progressions[index].length){
-                return Image.asset("data/images/chords/${progressions[index][i]}.png");
-              }
-              else{
-                return progressions[index][i];
-              }
-              
-            })
+            progressions[index],
           ]),
           Divider(),
         ],);
