@@ -39,7 +39,7 @@ class _SongDetailsState extends State<SongDetails> {
     });
   }
 
-  showAddTabDialog(BuildContext context){
+  showAddTabDialog(BuildContext context, String tabTitle){
 
     TextEditingController customController  =  new TextEditingController();
     bool accepted = true;
@@ -125,7 +125,8 @@ class _SongDetailsState extends State<SongDetails> {
 
               takeScreenshot().then((value) {
                 progressions.add(tabImage);
-                progressionsTitles.add("val");
+                progressionsTitles.add((tabTitle=="")? "Main": tabTitle);
+                Navigator.of(context).pop(customController.text.toString());
               });
 
               
@@ -246,7 +247,8 @@ class _SongDetailsState extends State<SongDetails> {
                       ),
                   onPressed: (){
                     setState(() {
-                      showAddTabDialog(context);
+                      Navigator.of(context).pop(customController.text.toString());
+                      showAddTabDialog(context, customController.text.toString());
                     });
                   }
               ,)
