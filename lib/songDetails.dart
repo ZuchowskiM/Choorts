@@ -337,7 +337,7 @@ class _SongDetailsState extends State<SongDetails> {
             ],),
             SizedBox(height: 30),
             StrummingPatternList(strummingPattern: strummingPatterns),
-            SizedBox(height: 30),
+            //SizedBox(height: 30),
             Row( children: [
               FloatingActionButton(onPressed: () {
                 showAddStrummingDialog(context);
@@ -355,7 +355,7 @@ class _SongDetailsState extends State<SongDetails> {
             ],),
             SizedBox(height: 30),
             getProgressionsList(),
-            SizedBox(height: 30),
+            //SizedBox(height: 30),
             Row(children: [
               FloatingActionButton(onPressed: () {
                 showAddProgressionDialog(context);
