@@ -1,9 +1,10 @@
 import 'package:choorts/strummingPattern.dart';
 import 'package:flutter/material.dart';
+import 'models/strummingPatternModel.dart';
 
 class StrummingPatternList extends StatelessWidget {
 
-  final List<StrummingPattern> strummingPattern;
+  final List<StrummingPatternModel> strummingPattern;
 
   StrummingPatternList({Key? key, required this.strummingPattern}): super(key: key);
 
@@ -14,13 +15,9 @@ class StrummingPatternList extends StatelessWidget {
       shrinkWrap: true,
       itemCount: strummingPattern.length,
       itemBuilder: (BuildContext context, int index){
-        return //Column(
-          //children: [
-            //Wrap(children:[
-              strummingPattern[index];
-            //] ),
-            //Divider(),
-          //],);
+        return 
+          StrummingPattern(patternName: strummingPattern[index].name ,strums: strummingPattern[index].strums);
+           
       },
     );
   }

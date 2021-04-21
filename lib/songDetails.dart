@@ -2,9 +2,9 @@ import 'dart:ui';
 import 'package:choorts/chordProgressionWidget.dart';
 import 'package:choorts/models/chordsProgressionModel.dart';
 import 'package:choorts/models/progressionModel.dart';
+import 'package:choorts/models/strummingPatternModel.dart';
 import 'package:choorts/models/tabProgressionModel.dart';
 import 'package:choorts/strummingCheckBoxList.dart';
-import 'package:choorts/strummingPattern.dart';
 import 'package:choorts/strummingPatternList.dart';
 import 'package:choorts/tabCharsGrid.dart';
 import 'package:flutter/material.dart';
@@ -39,11 +39,7 @@ class _SongDetailsState extends State<SongDetails> {
   bool _isTempoSliderVisible = false;
 
   List<ProgressionModel> progressions = [];
-
-  //List<Widget> progressions = [];
-  //List<String> progressionsTitles = [];
-  List<StrummingPattern> strummingPatterns = [];
-
+  List<StrummingPatternModel> strummingPatterns = [];
 
   @override
   void initState(){
@@ -51,6 +47,7 @@ class _SongDetailsState extends State<SongDetails> {
 
     _currentTempoValue = _song.tempo;
     progressions = _song.progressions;
+    strummingPatterns = _song.strummingPatterns;
 
     super.initState();
   }
@@ -202,12 +199,15 @@ class _SongDetailsState extends State<SongDetails> {
                   String tempPatternName = customController.text.toString();
 
                   if(tempPatternName == "") {tempPatternName="Main";}
-
-                  StrummingPattern temp = StrummingPattern(isStrumUp: strummingCheckBoxListUp.boxState,
-                  isStrumDown: strummingCheckBoxListDown.boxState,
-                  patternName: tempPatternName,);
+                  
+                  StrummingPatternModel temp = StrummingPatternModel(tempPatternName,
+                  strummingCheckBoxListUp.boxState,
+                  strummingCheckBoxListDown.boxState);
 
                   strummingPatterns.add(temp);
+
+                  Navigator.of(context).pop(customController.text.toString());
+
                 });
               }, 
               color: Colors.blue,
@@ -252,13 +252,11 @@ class _SongDetailsState extends State<SongDetails> {
                       ),
                   onPressed: (){
                     setState(() {
-                      //ChordProgressionWidget temp = ChordProgressionWidget();
-                      
+                         
                       ChordsProgressionModel chordsTemp = ChordsProgressionModel(
                         customController.text.toString());
-
                       _song.progressions.add(chordsTemp);
-                      //progressionsTitles.add(customController.text.toString());
+                     
                       Navigator.of(context).pop(customController.text.toString());
                     });
                   }

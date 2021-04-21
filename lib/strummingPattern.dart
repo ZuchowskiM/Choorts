@@ -1,20 +1,18 @@
+import 'package:choorts/models/strumsEnum.dart';
 import 'package:flutter/material.dart';
 
 class StrummingPattern extends StatelessWidget {
 
-  final List<bool> isStrumUp;
-  final List<bool> isStrumDown;
   final String patternName;
-
-  List<Widget> strums = [];
-  List<Text> strumsNumerators = [];
+  final List<Strum> strums;
   
 
-  StrummingPattern({Key? key, required this.isStrumUp, required this.isStrumDown,required this.patternName})
+  StrummingPattern({Key? key, required this.patternName, required this.strums})
   : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Column(mainAxisSize: MainAxisSize.min,
       children: [
         Text(patternName, textAlign: TextAlign.center, style: TextStyle(
@@ -28,10 +26,10 @@ class StrummingPattern extends StatelessWidget {
             child: ListView.builder(
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
-            itemCount: isStrumUp.length,
+            itemCount: strums.length,
             itemBuilder: (BuildContext context, int index){
 
-              if(isStrumUp[index]){
+              if(strums[index] == Strum.up){
                 return Column(
                   children: [
                     Icon(Icons.arrow_upward),
@@ -39,7 +37,7 @@ class StrummingPattern extends StatelessWidget {
                   ],
                 );
               }
-              else if(isStrumDown[index]){
+              else if(strums[index] == Strum.down){
               return Column(
                 children: [
                   Icon(Icons.arrow_downward),
@@ -62,26 +60,5 @@ class StrummingPattern extends StatelessWidget {
         Divider(),
       ],);
   }
-
-  void buildStrumsList(){
-
-    for (var i = 0; i < isStrumUp.length; i++) {
-
-      if(isStrumUp[i]){
-        strums.add(Icon(Icons.arrow_upward));
-      }
-      else if(isStrumDown[i]){
-        strums.add(Icon(Icons.arrow_downward));
-      }
-      else{
-        strums.add(VerticalDivider());
-      }
-      
-    }
-
-  }
-
-
-
 
 }
