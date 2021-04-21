@@ -6,6 +6,6 @@ class TabProgressionModel extends ProgressionModel{
 
   Image tab = Image.asset("data/images/other/tab.png");
 
-  TabProgressionModel(String name, Image tab) : super(name);
+  TabProgressionModel(String name, this.tab) : super(name);
 
 }

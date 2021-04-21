@@ -1,5 +1,8 @@
 import 'dart:ui';
 import 'package:choorts/chordProgressionWidget.dart';
+import 'package:choorts/models/chordsProgressionModel.dart';
+import 'package:choorts/models/progressionModel.dart';
+import 'package:choorts/models/tabProgressionModel.dart';
 import 'package:choorts/strummingCheckBoxList.dart';
 import 'package:choorts/strummingPattern.dart';
 import 'package:choorts/strummingPatternList.dart';
@@ -34,9 +37,11 @@ class _SongDetailsState extends State<SongDetails> {
   Song _song = Song("def", "def");
   double _currentTempoValue = 80;
   bool _isTempoSliderVisible = false;
-  List<String> chordsList = ["Am", "C", "D", "G"];
-  List<Widget> progressions = [];
-  List<String> progressionsTitles = [];
+
+  List<ProgressionModel> progressions = [];
+
+  //List<Widget> progressions = [];
+  //List<String> progressionsTitles = [];
   List<StrummingPattern> strummingPatterns = [];
 
 
@@ -45,6 +50,7 @@ class _SongDetailsState extends State<SongDetails> {
     _song = widget.song;
 
     _currentTempoValue = _song.tempo;
+    progressions = _song.progressions;
 
     super.initState();
   }
@@ -138,9 +144,11 @@ class _SongDetailsState extends State<SongDetails> {
           onPressed: (){
             setState(() {
 
+              
+
               takeScreenshot().then((value) {
-                progressions.add(tabImage);
-                progressionsTitles.add((tabTitle=="")? "Main": tabTitle);
+                TabProgressionModel tempTab = TabProgressionModel((tabTitle=="")? "Main": tabTitle, tabImage);
+                _song.progressions.add(tempTab);
                 Navigator.of(context).pop(customController.text.toString());
               });
 
@@ -244,10 +252,13 @@ class _SongDetailsState extends State<SongDetails> {
                       ),
                   onPressed: (){
                     setState(() {
-                      ChordProgressionWidget temp = ChordProgressionWidget();
+                      //ChordProgressionWidget temp = ChordProgressionWidget();
+                      
+                      ChordsProgressionModel chordsTemp = ChordsProgressionModel(
+                        customController.text.toString());
 
-                      progressions.add(temp);
-                      progressionsTitles.add(customController.text.toString());
+                      _song.progressions.add(chordsTemp);
+                      //progressionsTitles.add(customController.text.toString());
                       Navigator.of(context).pop(customController.text.toString());
                     });
                   }
@@ -283,11 +294,21 @@ class _SongDetailsState extends State<SongDetails> {
       shrinkWrap: true,
       itemCount: progressions.length,
       itemBuilder: (BuildContext context, int index) {
+        
+        Widget returnWidget;
+        if(progressions[index] is ChordsProgressionModel){
+          returnWidget = ChordProgressionWidget(
+            chords: (progressions[index] as ChordsProgressionModel).chords);
+        }
+        else{
+          returnWidget = (progressions[index] as TabProgressionModel).tab;
+        }
+
         return Column(children: [
           
-          Text(progressionsTitles[index], textAlign: TextAlign.center,),
+          Text(progressions[index].name, textAlign: TextAlign.center,),
           Wrap(children: [
-            progressions[index],
+            returnWidget,
           ]),
           Divider(),
         ],);

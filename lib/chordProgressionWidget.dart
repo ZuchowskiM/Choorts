@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 class ChordProgressionWidget extends StatefulWidget {
 
+  final List<String> chords;
+
+  ChordProgressionWidget({Key? key, required this.chords}): super(key: key);
+
   @override
   _ChordProgressionWidgetState createState() => _ChordProgressionWidgetState();
 }
@@ -9,12 +13,14 @@ class ChordProgressionWidget extends StatefulWidget {
 class _ChordProgressionWidgetState extends State<ChordProgressionWidget> {
 
   List<Widget> chordsProgression = [];
-  List<String> chordsList = ["Am", "C", "D", "G"];
+  List<String> fullChordsList = ["Am", "C", "D", "G"];
+  List<String> chords = [];
 
 
   @override
   void initState(){
-    super.initState();
+    
+    chords = widget.chords;
 
     chordsProgression.add(IconButton(
       icon: Icon(Icons.add,),
@@ -22,6 +28,8 @@ class _ChordProgressionWidgetState extends State<ChordProgressionWidget> {
         addChord(context);
       },
     ));
+
+    super.initState();
     
   }
 
@@ -32,14 +40,16 @@ class _ChordProgressionWidgetState extends State<ChordProgressionWidget> {
         height: 200.0, // Change as per your requirement
         width: 200.0, // Change as per your requirement
         child: ListView.builder(
-          itemCount: chordsList.length,
+          itemCount: fullChordsList.length,
           itemBuilder: (BuildContext context, int index){
             return ListTile(
-              title: Text('${chordsList[index]}'),
+              title: Text('${fullChordsList[index]}'),
               onTap: () {
                 setState(() {
-                  chordsProgression.insert(chordsProgression.length - 1,
-                  Image.asset("data/images/chords/${chordsList[index]}.png"));
+                  // chordsProgression.insert(chordsProgression.length - 1,
+                  // Image.asset("data/images/chords/${chordsList[index]}.png"));
+                  
+                  chords.add('${fullChordsList[index]}');
                 });
               },
             );
@@ -63,14 +73,21 @@ class _ChordProgressionWidgetState extends State<ChordProgressionWidget> {
       shrinkWrap: true,
       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
          crossAxisCount: 4),
-      itemCount: chordsProgression.length,
+      itemCount: chords.length+1,
       itemBuilder: (BuildContext context, int i) {
 
-      if(i==chordsProgression.length){
-        return Image.asset("data/images/chords/${chordsList[i]}.png");
+      if(i<chords.length){
+        return Image.asset("data/images/chords/${chords[i]}.png");
       }
       else{
-        return chordsProgression[i];
+        //return chordsProgression[i];
+
+        return IconButton(
+          icon: Icon(Icons.add,),
+          onPressed: () {
+            addChord(context);
+          },
+        );
       }
               
     });
