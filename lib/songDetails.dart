@@ -6,6 +6,7 @@ import 'package:choorts/strummingPatternList.dart';
 import 'package:choorts/tabCharsGrid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'song.dart';
 
 MyGlobals myGlobals = MyGlobals();
 
@@ -19,19 +20,34 @@ class MyGlobals {
 }
 
 class SongDetails extends StatefulWidget {
+
+  final Song song;
+
+  SongDetails({Key? key, required this.song}): super(key: key);
+
   @override
   _SongDetailsState createState() => _SongDetailsState();
 }
 
 class _SongDetailsState extends State<SongDetails> {
 
-
-  double _currentTempoValue = 120;
+  Song _song = Song("def", "def");
+  double _currentTempoValue = 80;
   bool _isTempoSliderVisible = false;
   List<String> chordsList = ["Am", "C", "D", "G"];
   List<Widget> progressions = [];
   List<String> progressionsTitles = [];
   List<StrummingPattern> strummingPatterns = [];
+
+
+  @override
+  void initState(){
+    _song = widget.song;
+
+    _currentTempoValue = _song.tempo;
+
+    super.initState();
+  }
   
   void showTempoSlider() {
     setState(() {
@@ -121,7 +137,6 @@ class _SongDetailsState extends State<SongDetails> {
           ),
           onPressed: (){
             setState(() {
-              List<Image> stackListTemp = [];
 
               takeScreenshot().then((value) {
                 progressions.add(tabImage);
@@ -318,6 +333,7 @@ class _SongDetailsState extends State<SongDetails> {
                     onChanged: (double value) {
                       setState(() {
                         _currentTempoValue = value;
+                        _song.tempo = value;
                       });
                     },
                   )
