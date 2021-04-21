@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'query.dart';
 import 'song.dart';
 import 'songDetails.dart';
 
@@ -27,11 +26,23 @@ class SongList extends StatefulWidget {
 
 class _SongListState extends State<SongList> {
 
-  final List<String> songs = <String>['Love Again', 'Say something'];
+  Song song1 = Song('Love Again', 'Dua Lipa');
+  Song song2 = Song('Say something', 'Timberlake');
+
+
+  List<Song> songs = [];
   final String title = "Choorts";
-  QueryCtr _query = new  QueryCtr();
   final _biggerFont = const TextStyle(
     fontSize: 18.0,);
+
+
+  @override
+  void initState(){
+    super.initState();
+
+    songs.add(song1);
+    songs.add(song2);
+  }
 
 
   addSong(BuildContext context){
@@ -50,10 +61,10 @@ class _SongListState extends State<SongList> {
             elevation: 0.5,
             child: Text("Submit"),
             onPressed: (){
-              Song songToAdd = Song(customController.text.toString());
+              Song songToAdd = Song(customController.text.toString(), "default");
 
               setState(() {
-                _query.insertSong(songToAdd);
+                songs.add(songToAdd);
               });
               Navigator.of(context).pop(customController.text.toString());
             }
@@ -76,23 +87,30 @@ class _SongListState extends State<SongList> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: FutureBuilder<List>(
-            future: _query.getAllSongs(),
-            initialData: <Song>[],
-            builder: (context, snapshot) {
-                return snapshot.hasData ?
-                new ListView.builder(
-                  padding: const EdgeInsets.all(10.0),
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, i) {
-                    return _buildRow(snapshot.data![i]);
-                  },
-                )
-                : Center(
-                      child: CircularProgressIndicator(),
-                    );
-            },
-            )
+            //   child: FutureBuilder<List>(
+            // future: _query.getAllSongs(),
+            // initialData: <Song>[],
+            // builder: (context, snapshot) {
+            //     return snapshot.hasData ?
+            //     new ListView.builder(
+            //       padding: const EdgeInsets.all(10.0),
+            //       itemCount: snapshot.data!.length,
+            //       itemBuilder: (context, i) {
+            //         return _buildRow(snapshot.data![i]);
+            //       },
+            //     )
+            //     : Center(
+            //           child: CircularProgressIndicator(),
+            //         );
+            // },
+            // )
+            // 
+            child: ListView.builder(
+              padding: const EdgeInsets.all(10.0),
+              itemCount: songs.length,
+              itemBuilder: (BuildContext context, int index){
+                return _buildRow(songs[index]);
+            }),
           ),
 
           Container(
@@ -130,7 +148,7 @@ class _SongListState extends State<SongList> {
           icon: Icon(Icons.delete),
           onPressed: () {
           setState(() {
-            _query.deleteSong(song);
+            songs.remove(song);
           });
           },
         ),
