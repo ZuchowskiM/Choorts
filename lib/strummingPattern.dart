@@ -57,7 +57,6 @@ class StrummingPattern extends StatelessWidget {
             }),
           )
         ]),
-        Divider(),
       ],);
   }
 

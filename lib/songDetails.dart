@@ -355,6 +355,8 @@ class _SongDetailsState extends State<SongDetails> {
           child: Center(
           child: Column(
           children: <Widget>[
+            Text(_song.name, style: TextStyle(fontSize: 20, fontFamily: "Ubuntu", fontWeight: FontWeight.bold)),
+            SizedBox(height: 40,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
