@@ -307,9 +307,37 @@ class _SongDetailsState extends State<SongDetails> {
           Text(progressions[index].name, textAlign: TextAlign.center,),
           Wrap(children: [
             returnWidget,
+           
+            
           ]),
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: (){
+              deleteProgression(context, index);
+            }),
           Divider(),
         ],);
+    });
+  }
+
+  deleteProgression(BuildContext context, int index){
+
+    return showDialog(context: context, builder: (context){
+      return AlertDialog(
+        title: Text("Delete progression?", textAlign: TextAlign.center,),
+        actions: <Widget>[
+          Center(child: MaterialButton(
+            child: Text("Confirm"),
+            color: Colors.red,
+            onPressed: (){
+              setState(() {
+                progressions.removeAt(index);
+                Navigator.of(context).pop();
+              });
+          })
+          ),
+        ],
+      );
     });
   }
 

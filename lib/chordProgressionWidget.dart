@@ -46,10 +46,9 @@ class _ChordProgressionWidgetState extends State<ChordProgressionWidget> {
               title: Text('${fullChordsList[index]}'),
               onTap: () {
                 setState(() {
-                  // chordsProgression.insert(chordsProgression.length - 1,
-                  // Image.asset("data/images/chords/${chordsList[index]}.png"));
-                  
+                 
                   chords.add('${fullChordsList[index]}');
+                  
                 });
               },
             );
@@ -80,7 +79,6 @@ class _ChordProgressionWidgetState extends State<ChordProgressionWidget> {
         return Image.asset("data/images/chords/${chords[i]}.png");
       }
       else{
-        //return chordsProgression[i];
 
         return IconButton(
           icon: Icon(Icons.add,),
