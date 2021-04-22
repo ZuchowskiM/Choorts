@@ -54,21 +54,25 @@ class _SongListState extends State<SongList> {
       return AlertDialog(
         title: Text("Song name:"),
         content: TextField(
+          decoration: InputDecoration(hintText: "song name"),
           controller: customController,
         ),
         actions: <Widget>[
-          MaterialButton(
-            elevation: 0.5,
-            child: Text("Submit"),
-            onPressed: (){
-              Song songToAdd = Song(customController.text.toString(), "default");
+          Center(
+            child: MaterialButton(
+              color: Colors.blue,
+              elevation: 0.5,
+              child: Text("Submit", style: TextStyle(color: Colors.white),),
+              onPressed: (){
+                Song songToAdd = Song(customController.text.toString(), "default");
 
-              setState(() {
-                songs.add(songToAdd);
-              });
-              Navigator.of(context).pop(customController.text.toString());
-            }
-            ,)
+                setState(() {
+                  songs.add(songToAdd);
+                });
+                Navigator.of(context).pop(customController.text.toString());
+              }
+              ,),
+          )
         ],
       );
     });
@@ -145,6 +149,7 @@ class _SongListState extends State<SongList> {
       title: new Text(song.name, style: _biggerFont),
       trailing: Container(
         child: IconButton(
+          color: Colors.red,
           icon: Icon(Icons.delete),
           onPressed: () {
           setState(() {
