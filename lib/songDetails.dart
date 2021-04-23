@@ -354,7 +354,7 @@ class _SongDetailsState extends State<SongDetails> {
                 Text("Tempo: ${_currentTempoValue.round().toString()}",
                 style: TextStyle(fontSize: 20),
                 ),
-                FloatingActionButton(onPressed: () {
+                FloatingActionButton(heroTag: null ,onPressed: () {
                   showTempoSlider();
               },
               child: Icon(Icons.add),
@@ -395,7 +395,8 @@ class _SongDetailsState extends State<SongDetails> {
             StrummingPatternList(strummingPattern: strummingPatterns),
             //SizedBox(height: 30),
             Row( children: [
-              FloatingActionButton(onPressed: () {
+              FloatingActionButton(heroTag: null,
+                onPressed: () {
                 showAddStrummingDialog(context);
               },
               child: Icon(Icons.add)),
@@ -413,7 +414,7 @@ class _SongDetailsState extends State<SongDetails> {
             getProgressionsList(),
             //SizedBox(height: 30),
             Row(children: [
-              FloatingActionButton(onPressed: () {
+              FloatingActionButton(heroTag: null, onPressed: () {
                 showAddProgressionDialog(context);
               },
               child: Icon(Icons.add)),
