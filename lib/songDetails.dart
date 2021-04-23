@@ -130,13 +130,11 @@ class _SongDetailsState extends State<SongDetails> {
           ]
         ),
       actions: <Widget>[
-        Center(child: MaterialButton(
-          color: Colors.blue,
-          elevation: 0.5,
+        Center(child: TextButton(
           child: Text("Add",
           style: TextStyle(
             fontSize: 20,
-            color: Colors.white)
+            color: Colors.blue)
           ),
           onPressed: (){
             setState(() {
@@ -193,7 +191,7 @@ class _SongDetailsState extends State<SongDetails> {
           ),
         actions: <Widget>[
           Center(
-            child: MaterialButton(
+            child: TextButton(
               onPressed: (){
                 setState(() {
                   String tempPatternName = customController.text.toString();
@@ -209,13 +207,11 @@ class _SongDetailsState extends State<SongDetails> {
                   Navigator.of(context).pop(customController.text.toString());
 
                 });
-              }, 
-              color: Colors.blue,
-              elevation: 0.5,
+              },
               child: Text("Add",
               style: TextStyle(
               fontSize: 20,
-              color: Colors.white),
+              color: Colors.blue),
               ),
             ),
           )
@@ -242,13 +238,11 @@ class _SongDetailsState extends State<SongDetails> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
 
-                MaterialButton(
-                  color: Colors.blue,
-                  elevation: 0.5,
+                TextButton(
                   child: Text("Chords",
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.white),
+                      color: Colors.blue),
                       ),
                   onPressed: (){
                     setState(() {
@@ -261,13 +255,11 @@ class _SongDetailsState extends State<SongDetails> {
                     });
                   }
                 ),
-              MaterialButton(
-                color: Colors.blue,
-                  elevation: 0.5,
+              TextButton(
                   child: Text("Tab",
                     style: TextStyle(
                         fontSize: 20,
-                        color: Colors.white),
+                        color: Colors.blue),
                       ),
                   onPressed: (){
                     setState(() {
@@ -326,9 +318,8 @@ class _SongDetailsState extends State<SongDetails> {
       return AlertDialog(
         title: Text("Delete progression?", textAlign: TextAlign.center,),
         actions: <Widget>[
-          Center(child: MaterialButton(
-            child: Text("Confirm"),
-            color: Colors.red,
+          Center(child: TextButton(
+            child: Text("Confirm", style: TextStyle(color: Colors.red, fontSize: 20,)),
             onPressed: (){
               setState(() {
                 progressions.removeAt(index);

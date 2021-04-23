@@ -19,9 +19,8 @@ class _StrummingPatternListState extends State<StrummingPatternList> {
       return AlertDialog(
         title: Text("Delete strumming pattern?", textAlign: TextAlign.center,),
         actions: <Widget>[
-          Center(child: MaterialButton(
-            child: Text("Confirm"),
-            color: Colors.red,
+          Center(child: TextButton(
+            child: Text("Confirm", style: TextStyle(fontSize: 20, color: Colors.red),),
             onPressed: (){
               setState(() {
                 widget.strummingPattern.removeAt(index);

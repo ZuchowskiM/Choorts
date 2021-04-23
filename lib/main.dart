@@ -33,7 +33,8 @@ class _SongListState extends State<SongList> {
   List<Song> songs = [];
   final String title = "Choorts";
   final _biggerFont = const TextStyle(
-    fontSize: 18.0,);
+    fontSize: 18.0,
+    color: Colors.white);
 
 
   @override
@@ -59,10 +60,8 @@ class _SongListState extends State<SongList> {
         ),
         actions: <Widget>[
           Center(
-            child: MaterialButton(
-              color: Colors.blue,
-              elevation: 0.5,
-              child: Text("Submit", style: TextStyle(color: Colors.white),),
+            child: TextButton(
+              child: Text("Add", style: TextStyle(color: Colors.blue, fontSize: 20),),
               onPressed: (){
                 Song songToAdd = Song(customController.text.toString(), "default");
 
