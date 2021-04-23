@@ -48,27 +48,37 @@ class _SongListState extends State<SongList> {
 
   addSong(BuildContext context){
 
-    TextEditingController customController  =  new TextEditingController();
+    TextEditingController songNameController  =  new TextEditingController();
+    TextEditingController songAutorController  =  new TextEditingController();
     
 
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
         title: Text("Song name:"),
-        content: TextField(
-          decoration: InputDecoration(hintText: "song name"),
-          controller: customController,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              decoration: InputDecoration(hintText: "song name"),
+              controller: songNameController,
+            ),
+            TextField(
+              decoration: InputDecoration(hintText: "song autor"),
+              controller: songAutorController,
+            ),
+          ],
         ),
         actions: <Widget>[
           Center(
             child: TextButton(
               child: Text("Add", style: TextStyle(color: Colors.blue, fontSize: 20),),
               onPressed: (){
-                Song songToAdd = Song(customController.text.toString(), "default");
+                Song songToAdd = Song(songNameController.text.toString(), songAutorController.text.toString());
 
                 setState(() {
                   songs.add(songToAdd);
                 });
-                Navigator.of(context).pop(customController.text.toString());
+                Navigator.of(context).pop(songNameController.text.toString());
               }
               ,),
           )
@@ -90,24 +100,6 @@ class _SongListState extends State<SongList> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-            //   child: FutureBuilder<List>(
-            // future: _query.getAllSongs(),
-            // initialData: <Song>[],
-            // builder: (context, snapshot) {
-            //     return snapshot.hasData ?
-            //     new ListView.builder(
-            //       padding: const EdgeInsets.all(10.0),
-            //       itemCount: snapshot.data!.length,
-            //       itemBuilder: (context, i) {
-            //         return _buildRow(snapshot.data![i]);
-            //       },
-            //     )
-            //     : Center(
-            //           child: CircularProgressIndicator(),
-            //         );
-            // },
-            // )
-            // 
             child: ListView.builder(
               padding: const EdgeInsets.all(10.0),
               itemCount: songs.length,
@@ -145,7 +137,7 @@ class _SongListState extends State<SongList> {
       ),
       
       child: ListTile(
-      title: new Text(song.name, style: _biggerFont),
+      title: new Text("${song.name} - ${song.autor}", style: _biggerFont),
       trailing: Container(
         child: IconButton(
           color: Colors.red,
