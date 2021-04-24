@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'models/song.dart';
 import 'songDetails.dart';
+import 'package:path_provider/path_provider.dart' as pathP;
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDir = await pathP.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  Hive.openBox("songs");
   runApp(MyApp());
 } 
 
@@ -76,7 +82,8 @@ class _SongListState extends State<SongList> {
                 Song songToAdd = Song(songNameController.text.toString(), songAutorController.text.toString());
 
                 setState(() {
-                  songs.add(songToAdd);
+                  //songs.add(songToAdd);
+                  Hive.box("songs").add(songToAdd);
                 });
                 Navigator.of(context).pop(songNameController.text.toString());
               }
@@ -100,12 +107,27 @@ class _SongListState extends State<SongList> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: songs.length,
-              itemBuilder: (BuildContext context, int index){
-                return _buildRow(songs[index]);
-            }),
+            // child: ListView.builder(
+            //   padding: const EdgeInsets.all(10.0),
+            //   itemCount: songs.length,
+            //   itemBuilder: (BuildContext context, int index){
+            //     return _buildRow(songs[index]);
+            // }),
+            child: FutureBuilder(
+              future: Hive.openBox("songs"),
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                if(snapshot.connectionState == ConnectionState.done){
+                  return ListView.builder(
+                      padding: const EdgeInsets.all(10.0),
+                      itemCount: Hive.box("songs").length,
+                      itemBuilder: (BuildContext context, int index){
+                        return _buildRow(Hive.box("songs").getAt(index));
+                    });
+                }
+                else{
+                  return Text("connection not done");
+                }
+              },),
           ),
 
           Container(
@@ -150,12 +172,12 @@ class _SongListState extends State<SongList> {
         ),
       ), 
      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SongDetails(song: song,)
-          )
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => SongDetails(song: song,)
+        //   )
+        // );
      }, 
     ),
     );
