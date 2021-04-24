@@ -1,11 +1,11 @@
 
-import 'package:choorts/models/progressionModel.dart';
-import 'package:flutter/material.dart';
+// import 'package:choorts/models/progressionModel.dart';
+// import 'package:flutter/material.dart';
 
-class TabProgressionModel extends ProgressionModel{
+// class TabProgressionModel extends ProgressionModel{
 
-  Image tab = Image.asset("data/images/other/tab.png");
+//   Image tab = Image.asset("data/images/other/tab.png");
 
-  TabProgressionModel(String name, this.tab) : super(name);
+//   TabProgressionModel(String name, this.tab) : super(name);
 
-}
+// }

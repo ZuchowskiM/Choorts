@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'song.dart';
+import 'models/song.dart';
 import 'songDetails.dart';
 
 void main() async {

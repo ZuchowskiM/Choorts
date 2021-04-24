@@ -23,8 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sqflite: ^2.0.0
-  path:
   path_provider: ^2.0.1
   # screenshot: ^0.3.0
 

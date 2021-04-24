@@ -9,7 +9,7 @@ import 'package:choorts/strummingPatternList.dart';
 import 'package:choorts/tabCharsGrid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'song.dart';
+import 'models/song.dart';
 
 MyGlobals myGlobals = MyGlobals();
 
