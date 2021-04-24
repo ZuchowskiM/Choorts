@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'models/progressionModel.dart';
 import 'models/song.dart';
+import 'models/strummingPatternModel.dart';
+import 'models/strumsEnum.dart';
 import 'songDetails.dart';
 import 'package:path_provider/path_provider.dart' as pathP;
 
@@ -8,6 +11,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await pathP.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
+  Hive.registerAdapter(SongAdapter());
+  Hive.registerAdapter(ProgressionModelAdapter());
+  Hive.registerAdapter(StrumAdapter());
+  Hive.registerAdapter(StrummingPatternModelAdapter());
   Hive.openBox("songs");
   runApp(MyApp());
 } 
@@ -51,6 +58,11 @@ class _SongListState extends State<SongList> {
     songs.add(song2);
   }
 
+  @override
+  void dispose(){
+    Hive.close();
+    super.dispose();
+  }
 
   addSong(BuildContext context){
 
@@ -121,11 +133,11 @@ class _SongListState extends State<SongList> {
                       padding: const EdgeInsets.all(10.0),
                       itemCount: Hive.box("songs").length,
                       itemBuilder: (BuildContext context, int index){
-                        return _buildRow(Hive.box("songs").getAt(index));
+                        return _buildRow(Hive.box("songs").getAt(index), index);
                     });
                 }
                 else{
-                  return Text("connection not done");
+                  return CircularProgressIndicator();
                 }
               },),
           ),
@@ -147,7 +159,7 @@ class _SongListState extends State<SongList> {
         );  
   }
 
-  Widget _buildRow(Song song) {
+  Widget _buildRow(Song song, int index) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
@@ -166,7 +178,8 @@ class _SongListState extends State<SongList> {
           icon: Icon(Icons.delete),
           onPressed: () {
           setState(() {
-            songs.remove(song);
+            //songs.remove(song);
+            Hive.box("songs").deleteAt(index);
           });
           },
         ),
