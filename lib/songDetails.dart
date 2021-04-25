@@ -207,7 +207,7 @@ class _SongDetailsState extends State<SongDetails> {
                   strummingCheckBoxListDown.boxState);
 
                   _strummingPatterns.add(temp);
-                  Hive.box("songs").putAt(_songIndex, _song);
+                  _songsBox.putAt(_songIndex, _song);
 
                   Navigator.of(context).pop(customController.text.toString());
 
@@ -398,7 +398,7 @@ class _SongDetailsState extends State<SongDetails> {
               ),
             ],),
             SizedBox(height: 30),
-            StrummingPatternList(strummingPattern: _strummingPatterns),
+            StrummingPatternList(songsBox: _songsBox, songIndex: _songIndex, song: _song,),
             //SizedBox(height: 30),
             Row( children: [
               FloatingActionButton(heroTag: null,
