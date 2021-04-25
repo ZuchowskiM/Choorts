@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:choorts/chordProgressionWidget.dart';
 import 'package:choorts/models/progressionModel.dart';
@@ -73,7 +74,7 @@ class _SongDetailsState extends State<SongDetails> {
     double x = 200;
     double y = 20;
     List<Positioned> notesList = [];
-    Image tabImage = Image.asset("data/images/chords/Am.png");
+    Uint8List imageAsUint8 = Uint8List(10);
     var src = new GlobalKey();
 
     takeScreenshot() async{
@@ -81,10 +82,7 @@ class _SongDetailsState extends State<SongDetails> {
       repaintBoundary.toImage();
       var image = await repaintBoundary.toImage();
       var byteData = await image.toByteData(format: ImageByteFormat.png);
-      var pngBytes = byteData!.buffer.asUint8List();
-      setState(() {
-        tabImage = Image.memory(pngBytes.buffer.asUint8List());
-      });
+      imageAsUint8 = byteData!.buffer.asUint8List();
     }
 
 
@@ -144,15 +142,19 @@ class _SongDetailsState extends State<SongDetails> {
             color: Colors.blue)
           ),
           onPressed: (){
-            // setState(() {
+            setState(() {
 
-            //   takeScreenshot().then((value) {
-            //     TabProgressionModel tempTab = TabProgressionModel((tabTitle=="")? "Main": tabTitle, tabImage);
-            //     _song.progressions.add(tempTab);
-            //     Navigator.of(context).pop(customController.text.toString());
-            //   });
+              takeScreenshot().then((value) {
+                ProgressionModel tempTab = ProgressionModel((tabTitle=="")? "Main": tabTitle, false);
+                tempTab.tabImage = imageAsUint8;
+
+                _song.progressions.add(tempTab);
+                _songsBox.putAt(_songIndex, _song);
+
+                Navigator.of(context).pop(customController.text.toString());
+              });
  
-            // });
+            });
           }),
         )
       ],
@@ -238,46 +240,44 @@ class _SongDetailsState extends State<SongDetails> {
           controller: customController,
         ),
         actions: <Widget>[
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
 
-                TextButton(
-                  child: Text("Chords",
-                    style: TextStyle(
+              TextButton(
+                child: Text("Chords",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.blue),
+                    ),
+                onPressed: (){
+                  setState(() {
+                       
+                    ProgressionModel chordsTemp = ProgressionModel(
+                      customController.text.toString(), true);
+
+                    _song.progressions.add(chordsTemp);
+
+                    _songsBox.putAt(_songIndex, _song);
+                   
+                    Navigator.of(context).pop(customController.text.toString());
+                  });
+                }
+              ),
+            TextButton(
+                child: Text("Tab",
+                  style: TextStyle(
                       fontSize: 20,
                       color: Colors.blue),
-                      ),
-                  onPressed: (){
-                    setState(() {
-                         
-                      ProgressionModel chordsTemp = ProgressionModel(
-                        customController.text.toString(), true);
-
-                      _song.progressions.add(chordsTemp);
-
-                      _songsBox.putAt(_songIndex, _song);
-                     
-                      Navigator.of(context).pop(customController.text.toString());
-                    });
-                  }
-                ),
-              TextButton(
-                  child: Text("Tab",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.blue),
-                      ),
-                  onPressed: (){
-                    setState(() {
-                      Navigator.of(context).pop(customController.text.toString());
-                      showAddTabDialog(context, customController.text.toString());
-                    });
-                  }
-              ,)
-            ]
-          )
+                    ),
+                onPressed: (){
+                  setState(() {
+                    Navigator.of(context).pop(customController.text.toString());
+                    showAddTabDialog(context, customController.text.toString());
+                  });
+                }
+            ,)
+          ]
           )
           
         ],
@@ -305,8 +305,8 @@ class _SongDetailsState extends State<SongDetails> {
           
         }
         else{
-          //returnWidget = (_progressions[index].tabImage);
-          returnWidget = Text("here should be Tab progression");
+          returnWidget = Image.memory(_progressions[index].tabImage.buffer.asUint8List());
+          //returnWidget = Text("here should be Tab progression");
         }
 
         return Column(children: [
@@ -410,7 +410,6 @@ class _SongDetailsState extends State<SongDetails> {
             ],),
             SizedBox(height: 30),
             StrummingPatternList(songsBox: _songsBox, songIndex: _songIndex, song: _song,),
-            //SizedBox(height: 30),
             Row( children: [
               FloatingActionButton(heroTag: null,
                 onPressed: () {
@@ -429,7 +428,6 @@ class _SongDetailsState extends State<SongDetails> {
             ],),
             SizedBox(height: 30),
             getProgressionsList(),
-            //SizedBox(height: 30),
             Row(children: [
               FloatingActionButton(heroTag: null, onPressed: () {
                 showAddProgressionDialog(context);

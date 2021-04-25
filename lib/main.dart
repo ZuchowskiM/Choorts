@@ -39,11 +39,6 @@ class SongList extends StatefulWidget {
 
 class _SongListState extends State<SongList> {
 
-  Song song1 = Song('Love Again', 'Dua Lipa');
-  Song song2 = Song('Say something', 'Timberlake');
-
-
-  List<Song> songs = [];
   final String title = "Choorts";
   final _biggerFont = const TextStyle(
     fontSize: 18.0,
@@ -53,9 +48,6 @@ class _SongListState extends State<SongList> {
   @override
   void initState(){
     super.initState();
-
-    songs.add(song1);
-    songs.add(song2);
   }
 
   @override
@@ -119,25 +111,29 @@ class _SongListState extends State<SongList> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-            // child: ListView.builder(
-            //   padding: const EdgeInsets.all(10.0),
-            //   itemCount: songs.length,
-            //   itemBuilder: (BuildContext context, int index){
-            //     return _buildRow(songs[index]);
-            // }),
             child: FutureBuilder(
               future: Hive.openBox("songs"),
               builder: (BuildContext context, AsyncSnapshot snapshot){
                 if(snapshot.connectionState == ConnectionState.done){
-                  return ListView.builder(
+
+                  if(snapshot.hasError){
+                    return Text(snapshot.error.toString());
+                  }
+                  else if(snapshot.hasData){
+                    return ListView.builder(
                       padding: const EdgeInsets.all(10.0),
                       itemCount: Hive.box("songs").length,
                       itemBuilder: (BuildContext context, int index){
                         return _buildRow(Hive.box("songs").getAt(index), index);
                     });
+                  }
+                  else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  
                 }
                 else{
-                  return CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator());
                 }
               },),
           ),
@@ -178,7 +174,6 @@ class _SongListState extends State<SongList> {
           icon: Icon(Icons.delete),
           onPressed: () {
           setState(() {
-            //songs.remove(song);
             Hive.box("songs").deleteAt(index);
           });
           },
