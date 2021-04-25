@@ -88,77 +88,74 @@ class _SongDetailsState extends State<SongDetails> {
 
     return showDialog(context: context, builder: (context){
       return AlertDialog(
-        title: Text("Add tab",
-          textAlign: TextAlign.center,),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              color: Colors.white,
-              child: DragTarget<Text>(
-                builder: (context, candidateData, rejectedData) {
-                  return RepaintBoundary(
-                    key: src,
-                    child: Stack(
-                    alignment: AlignmentDirectional.center,
-                    children: [
-                      Container(height: 180),
-                      Image.asset("data/images/other/tab.png"),
-                      ...notesList,
-                    ]),
-                  );
-                },
-                onWillAccept: (data) {
-                  return accepted;
-                },
-                onAcceptWithDetails: (details) {
-                  setState(() {
-                    print("acceptowano");
-                    x = details.offset.dx - 40;
-                    y = details.offset.dy - 120.0;
-                    print(x);
-                    print(y);
-                    example = details.data;
-                    notesList.add(Positioned(top: y, left: x, child: example,));
-                  });
-                },
-                onLeave: (data) {
-                  print("leave");
-                },  
-              )
-            ),
-            Row(
+          title: Text("Add tab",
+            textAlign: TextAlign.center,),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+      Container(
+        color: Colors.white,
+        child: DragTarget<Text>(
+          builder: (context, candidateData, rejectedData) {
+            return RepaintBoundary(
+              key: src,
+              child: Stack(
+              alignment: AlignmentDirectional.center,
               children: [
-                Expanded(child: Container(height: 300, width: 200, child: TabCharsGrid())),
-              ],
-            ),
-          ]
-        ),
-      actions: <Widget>[
-        Center(child: TextButton(
-          child: Text("Add",
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.blue)
-          ),
-          onPressed: (){
+                Container(height: 180),
+                Image.asset("data/images/other/tab.png"),
+                ...notesList,
+              ]),
+            );
+          },
+          onWillAccept: (data) {
+            return accepted;
+          },
+          onAcceptWithDetails: (details) {
             setState(() {
-
-              takeScreenshot().then((value) {
-                ProgressionModel tempTab = ProgressionModel((tabTitle=="")? "Main": tabTitle, false);
-                tempTab.tabImage = imageAsUint8;
-
-                _song.progressions.add(tempTab);
-                _songsBox.putAt(_songIndex, _song);
-
-                Navigator.of(context).pop(customController.text.toString());
-              });
- 
+              print("acceptowano");
+              x = details.offset.dx - 40;
+              y = details.offset.dy - 170.0;
+              print(x);
+              print(y);
+              example = details.data;
+              notesList.add(Positioned(top: y, left: x, child: example,));
             });
-          }),
+          },
+          onLeave: (data) {
+            print("leave");
+          },  
         )
-      ],
-      );
+      ),
+      Container(height: 200, width: 300, child: TabCharsGrid()),
+      ]),
+        actions: <Widget>[
+          Center(child: TextButton(
+            child: Text("Add",
+            style: TextStyle(
+      fontSize: 20,
+      color: Colors.blue)
+            ),
+            onPressed: (){
+      setState(() {
+
+        takeScreenshot().then((value) {
+          ProgressionModel tempTab = ProgressionModel((tabTitle=="")? "Main": tabTitle, false);
+          tempTab.tabImage = imageAsUint8;
+
+          setState(() {
+            _progressions.add(tempTab);
+            _songsBox.putAt(_songIndex, _song);
+          });
+          
+          Navigator.of(context).pop(customController.text.toString());
+        });
+ 
+      });
+            }),
+          )
+        ],
+        );
     });
   }
 

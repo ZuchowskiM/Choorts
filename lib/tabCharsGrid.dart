@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:choorts/tabChar.dart';
 import "package:flutter/material.dart";
 

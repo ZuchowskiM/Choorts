@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class StrummingCheckBoxList extends StatefulWidget {
 
   final bool isStrummingUp;
-  List<bool> boxState = [false, false, false ,false, false, false, false, false];
+  final List<bool> boxState = [false, false, false ,false, false, false, false, false];
 
   StrummingCheckBoxList({Key? key, required this.isStrummingUp}): super(key: key);
 

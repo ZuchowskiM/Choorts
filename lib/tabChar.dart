@@ -7,7 +7,7 @@ class TabChar extends StatelessWidget {
 
   TabChar({Key? key, required this.charToDraw}): super(key: key);
 
-  Offset position = Offset(0.0, 200);
+  final Offset position = Offset(0.0, 200);
 
   @override
   Widget build(BuildContext context) {
