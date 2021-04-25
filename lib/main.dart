@@ -185,12 +185,12 @@ class _SongListState extends State<SongList> {
         ),
       ), 
      onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => SongDetails(song: song,)
-        //   )
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SongDetails(songsBox: Hive.box("songs"), songIndex: index,),
+          )
+        );
      }, 
     ),
     );
