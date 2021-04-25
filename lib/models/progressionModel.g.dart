@@ -21,7 +21,7 @@ class ProgressionModelAdapter extends TypeAdapter<ProgressionModel> {
       fields[1] as bool,
     )
       ..chords = (fields[2] as List).cast<String>()
-      ..tabImage = fields[3] as ByteData;
+      ..tabImage = fields[31] as Uint8List;
   }
 
   @override
@@ -34,7 +34,7 @@ class ProgressionModelAdapter extends TypeAdapter<ProgressionModel> {
       ..write(obj.isChordsProgression)
       ..writeByte(2)
       ..write(obj.chords)
-      ..writeByte(3)
+      ..writeByte(31)
       ..write(obj.tabImage);
   }
 

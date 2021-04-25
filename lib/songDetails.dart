@@ -250,14 +250,17 @@ class _SongDetailsState extends State<SongDetails> {
                       color: Colors.blue),
                       ),
                   onPressed: (){
-                    // setState(() {
+                    setState(() {
                          
-                    //   ChordsProgressionModel chordsTemp = ChordsProgressionModel(
-                    //     customController.text.toString());
-                    //   _song.progressions.add(chordsTemp);
+                      ProgressionModel chordsTemp = ProgressionModel(
+                        customController.text.toString(), true);
+
+                      _song.progressions.add(chordsTemp);
+
+                      _songsBox.putAt(_songIndex, _song);
                      
-                    //   Navigator.of(context).pop(customController.text.toString());
-                    // });
+                      Navigator.of(context).pop(customController.text.toString());
+                    });
                   }
                 ),
               TextButton(
@@ -291,13 +294,20 @@ class _SongDetailsState extends State<SongDetails> {
       itemBuilder: (BuildContext context, int index) {
         
         Widget returnWidget = Text("here is Progression");
-        // if(_progressions[index] is ChordsProgressionModel){
-        //   returnWidget = ChordProgressionWidget(
-        //     chords: (_progressions[index] as ChordsProgressionModel).chords);
-        // }
-        // else{
-        //   returnWidget = (_progressions[index] as TabProgressionModel).tab;
-        // }
+
+        if(_progressions[index].isChordsProgression){
+
+          returnWidget = ChordProgressionWidget( songsBox: _songsBox,
+            songIndex:  _songIndex,
+            chords: _progressions[index].chords,
+            song: _song,);
+          
+          
+        }
+        else{
+          //returnWidget = (_progressions[index].tabImage);
+          returnWidget = Text("here should be Tab progression");
+        }
 
         return Column(children: [
           
@@ -328,6 +338,7 @@ class _SongDetailsState extends State<SongDetails> {
             onPressed: (){
               setState(() {
                 _progressions.removeAt(index);
+                _songsBox.putAt(_songIndex, _song);
                 Navigator.of(context).pop();
               });
           })

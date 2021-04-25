@@ -1,5 +1,5 @@
 
-import 'package:flutter/services.dart';
+import 'dart:typed_data';
 import 'package:hive/hive.dart';
 
 part 'progressionModel.g.dart';
@@ -16,8 +16,8 @@ class ProgressionModel{
   @HiveField(2)
   List<String> chords = [];
 
-  @HiveField(3)
-  ByteData tabImage = ByteData(10);
+  @HiveField(31)
+  Uint8List tabImage = Uint8List(10);
 
 
   ProgressionModel(this.name, this.isChordsProgression);

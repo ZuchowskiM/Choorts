@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+
+import 'models/song.dart';
 
 class ChordProgressionWidget extends StatefulWidget {
 
+  final Box<dynamic> songsBox;
+  final int songIndex;
   final List<String> chords;
+  final Song song;
 
-  ChordProgressionWidget({Key? key, required this.chords}): super(key: key);
+  ChordProgressionWidget({Key? key, required this.songsBox, required this.songIndex,
+  required this.chords, required this.song }): super(key: key);
 
   @override
   _ChordProgressionWidgetState createState() => _ChordProgressionWidgetState();
@@ -48,6 +55,8 @@ class _ChordProgressionWidgetState extends State<ChordProgressionWidget> {
                 setState(() {
                  
                   chords.add('${fullChordsList[index]}');
+                  widget.songsBox.putAt(widget.songIndex, widget.song);
+                  
                   
                 });
               },
