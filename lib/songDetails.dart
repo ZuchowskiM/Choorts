@@ -1,15 +1,15 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:choorts/chordProgressionWidget.dart';
-import 'package:choorts/models/chordsProgressionModel.dart';
 import 'package:choorts/models/progressionModel.dart';
 import 'package:choorts/models/strummingPatternModel.dart';
-import 'package:choorts/models/tabProgressionModel.dart';
 import 'package:choorts/strummingCheckBoxList.dart';
 import 'package:choorts/strummingPatternList.dart';
 import 'package:choorts/tabCharsGrid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'song.dart';
+import 'package:hive/hive.dart';
+import 'models/song.dart';
 
 MyGlobals myGlobals = MyGlobals();
 
@@ -24,9 +24,11 @@ class MyGlobals {
 
 class SongDetails extends StatefulWidget {
 
-  final Song song;
+  final Box<dynamic> songsBox;
+  final songIndex;
+  
 
-  SongDetails({Key? key, required this.song}): super(key: key);
+  SongDetails({Key? key, required this.songsBox, required this.songIndex}): super(key: key);
 
   @override
   _SongDetailsState createState() => _SongDetailsState();
@@ -34,20 +36,26 @@ class SongDetails extends StatefulWidget {
 
 class _SongDetailsState extends State<SongDetails> {
 
+  late Box<dynamic> _songsBox;
   Song _song = Song("def", "def");
   double _currentTempoValue = 80;
   bool _isTempoSliderVisible = false;
 
-  List<ProgressionModel> progressions = [];
-  List<StrummingPatternModel> strummingPatterns = [];
+  List<ProgressionModel> _progressions = [];
+  List<StrummingPatternModel> _strummingPatterns = [];
+
+  int _songIndex = 0;
 
   @override
   void initState(){
-    _song = widget.song;
+
+    _songsBox = widget.songsBox;
+    _songIndex = widget.songIndex;
+    _song = widget.songsBox.getAt(_songIndex);
 
     _currentTempoValue = _song.tempo;
-    progressions = _song.progressions;
-    strummingPatterns = _song.strummingPatterns;
+    _progressions = _song.progressions;
+    _strummingPatterns = _song.strummingPatterns;
 
     super.initState();
   }
@@ -66,7 +74,7 @@ class _SongDetailsState extends State<SongDetails> {
     double x = 200;
     double y = 20;
     List<Positioned> notesList = [];
-    Image tabImage = Image.asset("data/images/chords/Am.png");
+    Uint8List imageAsUint8 = Uint8List(10);
     var src = new GlobalKey();
 
     takeScreenshot() async{
@@ -74,10 +82,7 @@ class _SongDetailsState extends State<SongDetails> {
       repaintBoundary.toImage();
       var image = await repaintBoundary.toImage();
       var byteData = await image.toByteData(format: ImageByteFormat.png);
-      var pngBytes = byteData!.buffer.asUint8List();
-      setState(() {
-        tabImage = Image.memory(pngBytes.buffer.asUint8List());
-      });
+      imageAsUint8 = byteData!.buffer.asUint8List();
     }
 
 
@@ -139,15 +144,16 @@ class _SongDetailsState extends State<SongDetails> {
           onPressed: (){
             setState(() {
 
-              
-
               takeScreenshot().then((value) {
-                TabProgressionModel tempTab = TabProgressionModel((tabTitle=="")? "Main": tabTitle, tabImage);
+                ProgressionModel tempTab = ProgressionModel((tabTitle=="")? "Main": tabTitle, false);
+                tempTab.tabImage = imageAsUint8;
+
                 _song.progressions.add(tempTab);
+                _songsBox.putAt(_songIndex, _song);
+
                 Navigator.of(context).pop(customController.text.toString());
               });
-
-              
+ 
             });
           }),
         )
@@ -202,7 +208,8 @@ class _SongDetailsState extends State<SongDetails> {
                   strummingCheckBoxListUp.boxState,
                   strummingCheckBoxListDown.boxState);
 
-                  strummingPatterns.add(temp);
+                  _strummingPatterns.add(temp);
+                  _songsBox.putAt(_songIndex, _song);
 
                   Navigator.of(context).pop(customController.text.toString());
 
@@ -233,43 +240,44 @@ class _SongDetailsState extends State<SongDetails> {
           controller: customController,
         ),
         actions: <Widget>[
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
 
-                TextButton(
-                  child: Text("Chords",
-                    style: TextStyle(
+              TextButton(
+                child: Text("Chords",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.blue),
+                    ),
+                onPressed: (){
+                  setState(() {
+                       
+                    ProgressionModel chordsTemp = ProgressionModel(
+                      customController.text.toString(), true);
+
+                    _song.progressions.add(chordsTemp);
+
+                    _songsBox.putAt(_songIndex, _song);
+                   
+                    Navigator.of(context).pop(customController.text.toString());
+                  });
+                }
+              ),
+            TextButton(
+                child: Text("Tab",
+                  style: TextStyle(
                       fontSize: 20,
                       color: Colors.blue),
-                      ),
-                  onPressed: (){
-                    setState(() {
-                         
-                      ChordsProgressionModel chordsTemp = ChordsProgressionModel(
-                        customController.text.toString());
-                      _song.progressions.add(chordsTemp);
-                     
-                      Navigator.of(context).pop(customController.text.toString());
-                    });
-                  }
-                ),
-              TextButton(
-                  child: Text("Tab",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.blue),
-                      ),
-                  onPressed: (){
-                    setState(() {
-                      Navigator.of(context).pop(customController.text.toString());
-                      showAddTabDialog(context, customController.text.toString());
-                    });
-                  }
-              ,)
-            ]
-          )
+                    ),
+                onPressed: (){
+                  setState(() {
+                    Navigator.of(context).pop(customController.text.toString());
+                    showAddTabDialog(context, customController.text.toString());
+                  });
+                }
+            ,)
+          ]
           )
           
         ],
@@ -282,25 +290,32 @@ class _SongDetailsState extends State<SongDetails> {
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: progressions.length,
+      itemCount: _progressions.length,
       itemBuilder: (BuildContext context, int index) {
         
-        Widget returnWidget;
-        if(progressions[index] is ChordsProgressionModel){
-          returnWidget = ChordProgressionWidget(
-            chords: (progressions[index] as ChordsProgressionModel).chords);
+        Widget returnWidget = Text("here is Progression");
+
+        if(_progressions[index].isChordsProgression){
+
+          returnWidget = ChordProgressionWidget( songsBox: _songsBox,
+            songIndex:  _songIndex,
+            chords: _progressions[index].chords,
+            song: _song,);
+          
+          
         }
         else{
-          returnWidget = (progressions[index] as TabProgressionModel).tab;
+          returnWidget = Image.memory(_progressions[index].tabImage.buffer.asUint8List());
+          //returnWidget = Text("here should be Tab progression");
         }
 
         return Column(children: [
           
-          Text(progressions[index].name, textAlign: TextAlign.center,),
+          Text(_progressions[index].name, textAlign: TextAlign.center,),
           Wrap(children: [
+
             returnWidget,
            
-            
           ]),
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
@@ -322,7 +337,8 @@ class _SongDetailsState extends State<SongDetails> {
             child: Text("Confirm", style: TextStyle(color: Colors.red, fontSize: 20,)),
             onPressed: (){
               setState(() {
-                progressions.removeAt(index);
+                _progressions.removeAt(index);
+                _songsBox.putAt(_songIndex, _song);
                 Navigator.of(context).pop();
               });
           })
@@ -374,6 +390,7 @@ class _SongDetailsState extends State<SongDetails> {
                       setState(() {
                         _currentTempoValue = value;
                         _song.tempo = value;
+                        _songsBox.putAt(_songIndex, _song);
                       });
                     },
                   )
@@ -392,8 +409,7 @@ class _SongDetailsState extends State<SongDetails> {
               ),
             ],),
             SizedBox(height: 30),
-            StrummingPatternList(strummingPattern: strummingPatterns),
-            //SizedBox(height: 30),
+            StrummingPatternList(songsBox: _songsBox, songIndex: _songIndex, song: _song,),
             Row( children: [
               FloatingActionButton(heroTag: null,
                 onPressed: () {
@@ -412,7 +428,6 @@ class _SongDetailsState extends State<SongDetails> {
             ],),
             SizedBox(height: 30),
             getProgressionsList(),
-            //SizedBox(height: 30),
             Row(children: [
               FloatingActionButton(heroTag: null, onPressed: () {
                 showAddProgressionDialog(context);

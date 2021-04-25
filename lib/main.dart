@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
-import 'song.dart';
+import 'package:hive/hive.dart';
+import 'models/progressionModel.dart';
+import 'models/song.dart';
+import 'models/strummingPatternModel.dart';
+import 'models/strumsEnum.dart';
 import 'songDetails.dart';
+import 'package:path_provider/path_provider.dart' as pathP;
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDir = await pathP.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  Hive.registerAdapter(SongAdapter());
+  Hive.registerAdapter(ProgressionModelAdapter());
+  Hive.registerAdapter(StrumAdapter());
+  Hive.registerAdapter(StrummingPatternModelAdapter());
+  Hive.openBox("songs");
   runApp(MyApp());
 } 
 
@@ -26,11 +39,6 @@ class SongList extends StatefulWidget {
 
 class _SongListState extends State<SongList> {
 
-  Song song1 = Song('Love Again', 'Dua Lipa');
-  Song song2 = Song('Say something', 'Timberlake');
-
-
-  List<Song> songs = [];
   final String title = "Choorts";
   final _biggerFont = const TextStyle(
     fontSize: 18.0,
@@ -40,11 +48,13 @@ class _SongListState extends State<SongList> {
   @override
   void initState(){
     super.initState();
-
-    songs.add(song1);
-    songs.add(song2);
   }
 
+  @override
+  void dispose(){
+    Hive.close();
+    super.dispose();
+  }
 
   addSong(BuildContext context){
 
@@ -76,7 +86,8 @@ class _SongListState extends State<SongList> {
                 Song songToAdd = Song(songNameController.text.toString(), songAutorController.text.toString());
 
                 setState(() {
-                  songs.add(songToAdd);
+                  //songs.add(songToAdd);
+                  Hive.box("songs").add(songToAdd);
                 });
                 Navigator.of(context).pop(songNameController.text.toString());
               }
@@ -100,12 +111,31 @@ class _SongListState extends State<SongList> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: songs.length,
-              itemBuilder: (BuildContext context, int index){
-                return _buildRow(songs[index]);
-            }),
+            child: FutureBuilder(
+              future: Hive.openBox("songs"),
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                if(snapshot.connectionState == ConnectionState.done){
+
+                  if(snapshot.hasError){
+                    return Text(snapshot.error.toString());
+                  }
+                  else if(snapshot.hasData){
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(10.0),
+                      itemCount: Hive.box("songs").length,
+                      itemBuilder: (BuildContext context, int index){
+                        return _buildRow(Hive.box("songs").getAt(index), index);
+                    });
+                  }
+                  else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  
+                }
+                else{
+                  return Center(child: CircularProgressIndicator());
+                }
+              },),
           ),
 
           Container(
@@ -125,7 +155,7 @@ class _SongListState extends State<SongList> {
         );  
   }
 
-  Widget _buildRow(Song song) {
+  Widget _buildRow(Song song, int index) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
@@ -144,7 +174,7 @@ class _SongListState extends State<SongList> {
           icon: Icon(Icons.delete),
           onPressed: () {
           setState(() {
-            songs.remove(song);
+            Hive.box("songs").deleteAt(index);
           });
           },
         ),
@@ -153,7 +183,7 @@ class _SongListState extends State<SongList> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SongDetails(song: song,)
+            builder: (context) => SongDetails(songsBox: Hive.box("songs"), songIndex: index,),
           )
         );
      }, 

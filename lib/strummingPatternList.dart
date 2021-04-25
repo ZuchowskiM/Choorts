@@ -1,12 +1,16 @@
 import 'package:choorts/strummingPattern.dart';
 import 'package:flutter/material.dart';
-import 'models/strummingPatternModel.dart';
+import 'package:hive/hive.dart';
+import 'models/song.dart';
 
 class StrummingPatternList extends StatefulWidget {
 
-  final List<StrummingPatternModel> strummingPattern;
+  final Box<dynamic> songsBox;
+  final int songIndex;
+  final Song song;
 
-  StrummingPatternList({Key? key, required this.strummingPattern}): super(key: key);
+  StrummingPatternList({Key? key, required this.songsBox,
+  required this.songIndex, required this.song}): super(key: key);
 
   @override
   _StrummingPatternListState createState() => _StrummingPatternListState();
@@ -23,7 +27,8 @@ class _StrummingPatternListState extends State<StrummingPatternList> {
             child: Text("Confirm", style: TextStyle(fontSize: 20, color: Colors.red),),
             onPressed: (){
               setState(() {
-                widget.strummingPattern.removeAt(index);
+                widget.song.strummingPatterns.removeAt(index);
+                widget.songsBox.putAt(widget.songIndex, widget.song);
                 Navigator.of(context).pop();
               });
           })
@@ -39,14 +44,14 @@ class _StrummingPatternListState extends State<StrummingPatternList> {
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: widget.strummingPattern.length,
+      itemCount: widget.song.strummingPatterns.length,
       itemBuilder: (BuildContext context, int index){
         return 
           Column(
             children: [
               StrummingPattern(
-                patternName: widget.strummingPattern[index].name ,
-                strums: widget.strummingPattern[index].strums),
+                patternName: widget.song.strummingPatterns[index].name ,
+                strums: widget.song.strummingPatterns[index].strums),
               
               IconButton(
               icon: Icon(Icons.delete, color: Colors.red),

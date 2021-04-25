@@ -1,10 +1,10 @@
 
-import 'package:choorts/models/progressionModel.dart';
+// import 'package:choorts/models/progressionModel.dart';
 
-class ChordsProgressionModel extends ProgressionModel{
+// class ChordsProgressionModel extends ProgressionModel{
   
-  List<String> chords = [];
+//   List<String> chords = [];
 
-  ChordsProgressionModel(String name) : super(name);
+//   ChordsProgressionModel(String name) : super(name);
 
-}
+// }
