@@ -1,16 +1,12 @@
-# choorts
+# Choorts
 
-A new Flutter project.
+My first Flutter project
 
-## Getting Started
+A mobile application for guitar players that allows to keep track of your guitar repertoire, and be sure now that after D chord comes A chord... or vice versa.
 
-This project is a starting point for a Flutter application.
+# Application features
+App at this stage of development allows to create and delete a song. Song consists of tempo value, strumming patterns and progressions (Tab or Chords), each of those things user can add to a song.
 
-A few resources to get you started if this is your first Flutter project:
+Data are being saved locally using Hive
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Work in Progress ###
