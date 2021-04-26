@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'models/progressionModel.dart';
 import 'models/song.dart';
@@ -26,6 +28,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Choorts',
+      theme: ThemeData(
+        primaryColor: Colors.black,
+        accentColor: Colors.orange[400],
+
+        textTheme: TextTheme(
+          headline1: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,  color: Colors.orange[600]),
+          headline2: TextStyle(fontSize: 20, color: Colors.black,),
+          headline3: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+        )
+      ),
       home: SongList(), 
     );
   }
@@ -103,8 +115,11 @@ class _SongListState extends State<SongList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title, style: GoogleFonts.pacifico(),),
         centerTitle: true,
+        backwardsCompatibility: false,
+        backgroundColor: Theme.of(context).primaryColor,
+        systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.grey[900]),
       ),
       body:
         Column(
@@ -159,9 +174,9 @@ class _SongListState extends State<SongList> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.blue,
+        color: Theme.of(context).primaryColor,
         border: Border.all(
-          color: Colors.blue,
+          //color: Colors.blue,
         ),
         borderRadius: BorderRadius.all(Radius.circular(20))
       ),

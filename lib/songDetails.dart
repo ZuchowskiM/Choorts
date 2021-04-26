@@ -8,6 +8,7 @@ import 'package:choorts/strummingPatternList.dart';
 import 'package:choorts/tabCharsGrid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'models/song.dart';
 
@@ -130,30 +131,37 @@ class _SongDetailsState extends State<SongDetails> {
       Container(height: 200, width: 300, child: TabCharsGrid()),
       ]),
         actions: <Widget>[
-          Center(child: TextButton(
+          TextButton(
             child: Text("Add",
             style: TextStyle(
-      fontSize: 20,
-      color: Colors.blue)
-            ),
-            onPressed: (){
-      setState(() {
+              fontSize: 20,
+              color: Theme.of(context).accentColor
+              )
+                    ),
+                    onPressed: (){
+              setState(() {
 
-        takeScreenshot().then((value) {
-          ProgressionModel tempTab = ProgressionModel((tabTitle=="")? "Main": tabTitle, false);
-          tempTab.tabImage = imageAsUint8;
+                takeScreenshot().then((value) {
+                  ProgressionModel tempTab = ProgressionModel((tabTitle=="")? "Main": tabTitle, false);
+                  tempTab.tabImage = imageAsUint8;
 
-          setState(() {
-            _progressions.add(tempTab);
-            _songsBox.putAt(_songIndex, _song);
-          });
-          
-          Navigator.of(context).pop(customController.text.toString());
-        });
- 
-      });
-            }),
-          )
+                  setState(() {
+                    _progressions.add(tempTab);
+                    _songsBox.putAt(_songIndex, _song);
+                  });
+                  
+                  Navigator.of(context).pop(customController.text.toString());
+                });
+        
+              });
+          }),
+          TextButton(onPressed: (){
+            Navigator.of(context).pop(customController.text.toString());
+          },
+          child: Text("Cancel", style: 
+            TextStyle(color: Colors.red, fontSize: 20,)
+            )
+          ),
         ],
         );
     });
@@ -193,32 +201,37 @@ class _SongDetailsState extends State<SongDetails> {
           ],
           ),
         actions: <Widget>[
-          Center(
-            child: TextButton(
-              onPressed: (){
-                setState(() {
-                  String tempPatternName = customController.text.toString();
+          TextButton(
+            onPressed: (){
+              setState(() {
+                String tempPatternName = customController.text.toString();
 
-                  if(tempPatternName == "") {tempPatternName="Main";}
-                  
-                  StrummingPatternModel temp = StrummingPatternModel(tempPatternName,
-                  strummingCheckBoxListUp.boxState,
-                  strummingCheckBoxListDown.boxState);
+                if(tempPatternName == "") {tempPatternName="Main";}
+                
+                StrummingPatternModel temp = StrummingPatternModel(tempPatternName,
+                strummingCheckBoxListUp.boxState,
+                strummingCheckBoxListDown.boxState);
 
-                  _strummingPatterns.add(temp);
-                  _songsBox.putAt(_songIndex, _song);
+                _strummingPatterns.add(temp);
+                _songsBox.putAt(_songIndex, _song);
 
-                  Navigator.of(context).pop(customController.text.toString());
+                Navigator.of(context).pop(customController.text.toString());
 
-                });
-              },
-              child: Text("Add",
-              style: TextStyle(
-              fontSize: 20,
-              color: Colors.blue),
-              ),
+              });
+            },
+            child: Text("Add",
+            style: TextStyle(
+            fontSize: 20,
+            color: Theme.of(context).accentColor)
             ),
-          )
+          ),
+          TextButton(onPressed: (){
+              Navigator.of(context).pop(customController.text.toString());
+            },
+            child: Text("Cancel", style: 
+              TextStyle(color: Colors.red, fontSize: 20,)
+              )
+          ),
         ],
       );
     });
@@ -245,7 +258,7 @@ class _SongDetailsState extends State<SongDetails> {
                 child: Text("Chords",
                   style: TextStyle(
                     fontSize: 20,
-                    color: Colors.blue),
+                    color: Theme.of(context).accentColor),
                     ),
                 onPressed: (){
                   setState(() {
@@ -265,7 +278,7 @@ class _SongDetailsState extends State<SongDetails> {
                 child: Text("Tab",
                   style: TextStyle(
                       fontSize: 20,
-                      color: Colors.blue),
+                      color: Theme.of(context).accentColor),
                     ),
                 onPressed: (){
                   setState(() {
@@ -308,7 +321,8 @@ class _SongDetailsState extends State<SongDetails> {
 
         return Column(children: [
           
-          Text(_progressions[index].name, textAlign: TextAlign.center,),
+          Text(_progressions[index].name, textAlign: TextAlign.center,
+           style: Theme.of(context).textTheme.headline3),
           Wrap(children: [
 
             returnWidget,
@@ -350,7 +364,7 @@ class _SongDetailsState extends State<SongDetails> {
     return Scaffold(
       key: myGlobals._scaffoldKey,
       appBar: AppBar (
-        title: Text("Choorts"),
+        title: Text("Choorts", style: GoogleFonts.pacifico()),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -359,7 +373,7 @@ class _SongDetailsState extends State<SongDetails> {
           child: Center(
           child: Column(
           children: <Widget>[
-            Text(_song.name, style: TextStyle(fontSize: 20, fontFamily: "Ubuntu", fontWeight: FontWeight.bold)),
+            Text(_song.name, style: Theme.of(context).textTheme.headline1),
             SizedBox(height: 40,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -379,6 +393,7 @@ class _SongDetailsState extends State<SongDetails> {
                 visible: _isTempoSliderVisible,
                 child: Expanded(
                   child: Slider(
+                    activeColor: Theme.of(context).primaryColor,
                     value: _currentTempoValue,
                     min:1,
                     max:200,
@@ -401,7 +416,7 @@ class _SongDetailsState extends State<SongDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
               Text("Strumming patterns:",
-                style: TextStyle(fontSize: 20),
+                style: Theme.of(context).textTheme.headline2,
                 textAlign: TextAlign.center,
               ),
             ],),
@@ -421,7 +436,7 @@ class _SongDetailsState extends State<SongDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
               Text("Progression",
-              style: TextStyle(fontSize: 20))
+              style: Theme.of(context).textTheme.headline2)
             ],),
             SizedBox(height: 30),
             getProgressionsList(),

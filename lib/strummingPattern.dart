@@ -15,9 +15,7 @@ class StrummingPattern extends StatelessWidget {
 
     return Column(mainAxisSize: MainAxisSize.min,
       children: [
-        Text(patternName, textAlign: TextAlign.center, style: TextStyle(
-          fontSize: 20,
-        ),),
+        Text(patternName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3),
         SizedBox(height: 30),
         Row(mainAxisAlignment: MainAxisAlignment.center,
           children: [
