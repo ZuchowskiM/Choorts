@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:choorts/chordProgressionWidget.dart';
 import 'package:choorts/models/progressionModel.dart';
 import 'package:choorts/models/strummingPatternModel.dart';
+import 'package:choorts/playPauseButton.dart';
 import 'package:choorts/strummingCheckBoxList.dart';
 import 'package:choorts/strummingPatternList.dart';
 import 'package:choorts/tabCharsGrid.dart';
@@ -381,11 +382,17 @@ class _SongDetailsState extends State<SongDetails> {
                 Text("Tempo: ${_currentTempoValue.round().toString()}",
                 style: TextStyle(fontSize: 20),
                 ),
-                FloatingActionButton(heroTag: null ,onPressed: () {
-                  showTempoSlider();
-              },
-              child: Icon(Icons.add),
-              ),
+                Row(
+                  children: [
+                  PlayPauseButton(),
+                  SizedBox(width: 10),
+                  FloatingActionButton(heroTag: null ,onPressed: () {
+                      showTempoSlider();
+                    },
+                    child: Icon(Icons.add),
+                  ),
+                ],)
+                
               ],
             ),
             Row(children: [
