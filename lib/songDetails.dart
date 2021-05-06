@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:choorts/chordProgressionWidget.dart';
@@ -9,9 +10,11 @@ import 'package:choorts/strummingPatternList.dart';
 import 'package:choorts/tabCharsGrid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'models/song.dart';
+import 'package:quiver/async.dart';
 
 MyGlobals myGlobals = MyGlobals();
 
@@ -38,6 +41,11 @@ class SongDetails extends StatefulWidget {
 
 class _SongDetailsState extends State<SongDetails> {
 
+  late Metronome _metronome;
+  late StreamSubscription _subscription;
+
+  
+
   late Box<dynamic> _songsBox;
   Song _song = Song("def", "def");
   double _currentTempoValue = 80;
@@ -58,6 +66,9 @@ class _SongDetailsState extends State<SongDetails> {
     _currentTempoValue = _song.tempo;
     _progressions = _song.progressions;
     _strummingPatterns = _song.strummingPatterns;
+
+    _metronome = new Metronome.epoch(new Duration(seconds: (60/_currentTempoValue).round()));
+    
 
     super.initState();
   }
@@ -360,6 +371,12 @@ class _SongDetailsState extends State<SongDetails> {
     });
   }
 
+  Icon btnPlayIcon = Icon(Icons.play_arrow);
+  Color btnPlayColor = Colors.green;
+  bool btnPlayState = false;
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -384,7 +401,40 @@ class _SongDetailsState extends State<SongDetails> {
                 ),
                 Row(
                   children: [
-                  PlayPauseButton(),
+                    FloatingActionButton(
+                      child: btnPlayIcon,
+                        backgroundColor: btnPlayColor,
+                        heroTag: null ,
+                        onPressed: () {
+                          setState(() {
+                           
+                            if(!btnPlayState){
+                              btnPlayIcon = Icon(Icons.pause);
+                              btnPlayColor = Colors.red;
+                              btnPlayState = !btnPlayState;
+
+                              _metronome = new Metronome.epoch(new Duration(milliseconds: (60000/_currentTempoValue).round()));
+                              _subscription = _metronome.listen((event) {
+                                  
+                                if(btnPlayState){
+                                  //player.play(metronomeSound, volume: 5.0);
+                                  SystemSound.play(SystemSoundType.click);
+                                }
+                                                                    
+                              });
+
+                            }
+                            else{
+                              btnPlayIcon = Icon(Icons.play_arrow);
+                              btnPlayColor = Colors.green;
+                              btnPlayState = !btnPlayState;
+
+                              _subscription.cancel();
+       
+                            }
+
+                          });
+                    }),
                   SizedBox(width: 10),
                   FloatingActionButton(heroTag: null ,onPressed: () {
                       showTempoSlider();
